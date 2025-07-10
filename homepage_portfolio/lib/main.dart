@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 void main() {
   runApp(const PortfolioApp());
@@ -80,7 +81,8 @@ class PortfolioHomePage extends StatelessWidget {
                 backgroundColor: Colors.transparent,
               ),
               const SizedBox(height: 24),
-              Text(_name, style: Theme.of(context).textTheme.headlineLarge),
+              // Replace the old Row with the new widget
+              const AnimatedNameRow(),
               const SizedBox(height: 12),
               Text(_title, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 24),
@@ -138,5 +140,113 @@ class PortfolioHomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AnimatedNameRow extends StatefulWidget {
+  const AnimatedNameRow({super.key});
+
+  @override
+  State<AnimatedNameRow> createState() => _AnimatedNameRowState();
+}
+
+class _AnimatedNameRowState extends State<AnimatedNameRow> {
+  bool _animationFinished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 9 letters * 180ms = 1620ms, add 300ms buffer
+    Future.delayed(const Duration(milliseconds: 1920), () {
+      if (mounted) {
+        setState(() {
+          _animationFinished = true;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Szymon Samuel ',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+        if (!_animationFinished)
+          AnimatedTextKit(
+            repeatForever: false,
+            animatedTexts: [
+              TyperAnimatedText(
+                'Zborowski',
+                textStyle: Theme.of(context).textTheme.headlineLarge,
+                speed: const Duration(milliseconds: 180),
+              ),
+            ],
+            isRepeatingAnimation: false,
+          )
+        else
+          Text(
+            'Zborowski',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+        BlinkingUnderscore(style: Theme.of(context).textTheme.headlineLarge),
+      ],
+    );
+  }
+}
+
+class BlinkingUnderscore extends StatefulWidget {
+  const BlinkingUnderscore({super.key, this.style});
+  final TextStyle? style;
+
+  @override
+  State<BlinkingUnderscore> createState() => _BlinkingUnderscoreState();
+}
+
+class _BlinkingUnderscoreState extends State<BlinkingUnderscore>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+    _opacity = Tween<double>(begin: 1.0, end: 0.0).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _getUnderscoreWidth(context),
+      child: FadeTransition(
+        opacity: _opacity,
+        child: Text('_', style: widget.style),
+      ),
+    );
+  }
+
+  double _getUnderscoreWidth(BuildContext context) {
+    final style = widget.style ?? DefaultTextStyle.of(context).style;
+    final painter = TextPainter(
+      text: TextSpan(text: '_', style: style),
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.left,
+      textScaleFactor: MediaQuery.of(context).textScaleFactor,
+    )..layout();
+    return painter.width;
   }
 }
