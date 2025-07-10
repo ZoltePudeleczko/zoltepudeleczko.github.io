@@ -44,15 +44,17 @@ class PortfolioApp extends StatelessWidget {
 class PortfolioHomePage extends StatelessWidget {
   const PortfolioHomePage({super.key});
 
-  static const _name = 'Your Name';
-  static const _title = '.NET Backend Developer';
+  static const _name = 'Szymon Samuel Zborowski_';
+  static const _title = 'Software Engineer';
   static const _description =
-      'Passionate about building scalable backend systems. Minimalist. Professional.';
+      'System design. Programming. Getting things done.';
 
-  static const _githubUrl = 'https://github.com/yourprofile';
-  static const _youtubeUrl = 'https://youtube.com/yourprofile';
-  static const _xUrl = 'https://x.com/yourprofile';
-  static const _linkedinUrl = 'https://linkedin.com/in/yourprofile';
+  static const _githubUrl = 'https://github.com/ZoltePudeleczko';
+  static const _youtubeUrl = 'https://youtube.com/@ZoltePudeleczko';
+  static const _xUrl = 'https://x.com/ZoltePudeleczko';
+  static const _linkedinUrl = 'https://linkedin.com/in/szymon-zborowski';
+
+  static const _emailUrl = 'mailto:szzborowski@gmail.com';
 
   void _launchUrl(String url) async {
     final uri = Uri.parse(url);
@@ -72,6 +74,12 @@ class PortfolioHomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              CircleAvatar(
+                radius: 56,
+                backgroundImage: AssetImage('assets/avatar.png'),
+                backgroundColor: Colors.transparent,
+              ),
+              const SizedBox(height: 24),
               Text(_name, style: Theme.of(context).textTheme.headlineLarge),
               const SizedBox(height: 12),
               Text(_title, style: Theme.of(context).textTheme.titleMedium),
@@ -123,7 +131,7 @@ class PortfolioHomePage extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.mail_outline, color: Colors.white),
                 label: const Text('Say Hello'),
-                onPressed: () => _launchUrl('mailto:szzborowski@gmail.com'),
+                onPressed: () => _launchUrl(_emailUrl),
               ),
             ],
           ),
