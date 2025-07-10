@@ -45,7 +45,6 @@ class PortfolioApp extends StatelessWidget {
 class PortfolioHomePage extends StatelessWidget {
   const PortfolioHomePage({super.key});
 
-  static const _name = 'Szymon Samuel Zborowski_';
   static const _title = 'Software Engineer';
   static const _description =
       'System design. Programming. Getting things done.';
