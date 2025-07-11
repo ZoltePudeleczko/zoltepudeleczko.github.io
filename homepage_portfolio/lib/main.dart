@@ -134,6 +134,10 @@ class PortfolioHomePage extends StatelessWidget {
                 label: const Text('Say Hello'),
                 onPressed: () => _launchUrl(_emailUrl),
               ),
+              // Add footer spacing
+              const SizedBox(height: 48),
+              // Footer
+              const _Footer(),
             ],
           ),
         ),
@@ -244,8 +248,60 @@ class _BlinkingUnderscoreState extends State<BlinkingUnderscore>
       text: TextSpan(text: '_', style: style),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      textScaleFactor: MediaQuery.of(context).textScaleFactor,
+      textScaler: MediaQuery.textScalerOf(context),
     )..layout();
     return painter.width;
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer();
+
+  static const _repoUrl = 'https://github.com/ZoltePudeleczko/HomePageV2';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'This page was proudly (and quickly) vibe-coded.',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'You can check out the source code ',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 14,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            GestureDetector(
+              onTap: () async {
+                const url = _repoUrl;
+                final uri = Uri.parse(url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              child: Text(
+                'here',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.blueAccent,
+                      decoration: TextDecoration.underline,
+                      fontSize: 14,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
