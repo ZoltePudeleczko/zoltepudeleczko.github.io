@@ -59,7 +59,7 @@ class PortfolioHomePage extends StatelessWidget {
   void _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.platformDefault);
     }
   }
 
@@ -171,14 +171,15 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Text(
-          'Szymon Samuel ',
+          'Szymon Samuel',
           style: Theme.of(context).textTheme.headlineLarge,
         ),
+        const SizedBox(width: 8),
         if (!_animationFinished)
           AnimatedTextKit(
             repeatForever: false,

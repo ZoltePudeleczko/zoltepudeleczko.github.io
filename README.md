@@ -1,4 +1,4 @@
-# Szymon Samuel Zborowski
+# Szymon Samuel Zborowski | Homepage
 
 This repository contains the source code for my personal homepage, available at [zborowski.xyz](https://zborowski.xyz).
 
