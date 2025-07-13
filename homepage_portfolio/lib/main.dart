@@ -56,76 +56,82 @@ class PortfolioHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppConfig.horizontalPadding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: AppConfig.avatarRadius,
-                backgroundImage: AssetImage('assets/avatar.png'),
-                backgroundColor: Colors.transparent,
-              ),
-              const SizedBox(height: AppConfig.spacingLarge),
-              // Replace the old Row with the new widget
-              const AnimatedNameRow(),
-              const SizedBox(height: AppConfig.spacingMedium),
-              Text(AppConfig.title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: AppConfig.spacingLarge),
-              const ResponsiveDescription(),
-              const SizedBox(height: AppConfig.spacingXLarge),
-              Row(
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppConfig.horizontalPadding),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.github),
-                    tooltip: 'GitHub',
-                    onPressed: () => _launchUrl(AppConfig.githubUrl),
+                  CircleAvatar(
+                    radius: AppConfig.avatarRadius,
+                    backgroundImage: AssetImage('assets/avatar.png'),
+                    backgroundColor: Colors.transparent,
                   ),
-                  // Temporary hide youtube and x
-                  // IconButton(
-                  //   icon: const FaIcon(FontAwesomeIcons.youtube),
-                  //   tooltip: 'YouTube',
-                  //   onPressed: () => _launchUrl(AppConfig.youtubeUrl),
-                  // ),
-                  // IconButton(
-                  //   icon: const FaIcon(FontAwesomeIcons.xTwitter),
-                  //   tooltip: 'X',
-                  //   onPressed: () => _launchUrl(AppConfig.xUrl),
-                  // ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.linkedin),
-                    tooltip: 'LinkedIn',
-                    onPressed: () => _launchUrl(AppConfig.linkedinUrl),
+                  const SizedBox(height: AppConfig.spacingLarge),
+                  const AnimatedNameRow(),
+                  const SizedBox(height: AppConfig.spacingMedium),
+                  Text(AppConfig.title, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: AppConfig.spacingLarge),
+                  const ResponsiveDescription(),
+                  const SizedBox(height: AppConfig.spacingXLarge),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.github),
+                        tooltip: 'GitHub',
+                        onPressed: () => _launchUrl(AppConfig.githubUrl),
+                      ),
+                      // Temporary hide youtube and x
+                      // IconButton(
+                      //   icon: const FaIcon(FontAwesomeIcons.youtube),
+                      //   tooltip: 'YouTube',
+                      //   onPressed: () => _launchUrl(AppConfig.youtubeUrl),
+                      // ),
+                      // IconButton(
+                      //   icon: const FaIcon(FontAwesomeIcons.xTwitter),
+                      //   tooltip: 'X',
+                      //   onPressed: () => _launchUrl(AppConfig.xUrl),
+                      // ),
+                      IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.linkedin),
+                        tooltip: 'LinkedIn',
+                        onPressed: () => _launchUrl(AppConfig.linkedinUrl),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: AppConfig.spacingXLarge),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppConfig.buttonHorizontalPadding,
+                        vertical: AppConfig.buttonVerticalPadding,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppConfig.buttonBorderRadius),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w500),
+                      elevation: 0,
+                    ),
+                    icon: const Icon(Icons.mail_outline, color: Colors.white),
+                    label: const Text('Say Hello'),
+                    onPressed: () => _launchUrl(AppConfig.emailUrl),
+                  ),
+                  const SizedBox(height: AppConfig.spacingFooter),
+                  const _Footer(),
                 ],
               ),
-              const SizedBox(height: AppConfig.spacingXLarge),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppConfig.buttonHorizontalPadding, vertical: AppConfig.buttonVerticalPadding),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppConfig.buttonBorderRadius),
-                  ),
-                  textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500),
-                  elevation: 0,
-                ),
-                icon: const Icon(Icons.mail_outline, color: Colors.white),
-                label: const Text('Say Hello'),
-                onPressed: () => _launchUrl(AppConfig.emailUrl),
-              ),
-              // Add footer spacing
-              const SizedBox(height: AppConfig.spacingFooter),
-              // Footer
-              const _Footer(),
-            ],
+            ),
           ),
         ),
       ),
