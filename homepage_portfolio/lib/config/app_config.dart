@@ -24,10 +24,12 @@ class AppConfig {
   static const int typingSpeedMs = 180;
   static const int animationDurationMs = 1920; // 9 letters * 180ms + 300ms buffer
   static const int underscoreBlinkDurationMs = 800;
+  static const int avatarRotationDurationMs = 600;
   
   // Layout Settings
   static const double horizontalPadding = 24.0;
   static const double avatarRadius = 56.0;
+  static const String avatarImagePath = 'assets/avatar.png';
   static const double spacingTiny = 4.0;
   static const double spacingSmall = 8.0;
   static const double spacingMedium = 12.0;

@@ -3,6 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'config/app_config.dart';
+import 'config/text_content.dart';
+import 'config/text_styles.dart';
 
 void main() {
   runApp(const PortfolioApp());
@@ -22,20 +24,10 @@ class PortfolioApp extends StatelessWidget {
           secondary: Colors.blueAccent,
         ),
         scaffoldBackgroundColor: Colors.white,
-        textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-          titleMedium: TextStyle(
-            fontSize: 20,
-            color: Colors.black87,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 16,
-            color: Colors.black54,
-          ),
+        textTheme: TextTheme(
+          headlineLarge: AppTextStyles.headlineLarge,
+          titleMedium: AppTextStyles.titleMedium,
+          bodyMedium: AppTextStyles.bodyMedium,
         ),
       ),
       home: const PortfolioHomePage(),
@@ -88,8 +80,8 @@ class PortfolioHomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildSocialButton(FontAwesomeIcons.github, 'GitHub', AppConfig.githubUrl),
-                      _buildSocialButton(FontAwesomeIcons.linkedin, 'LinkedIn', AppConfig.linkedinUrl),
+                      _buildSocialButton(FontAwesomeIcons.github, TextContent.githubLabel, AppConfig.githubUrl),
+                      _buildSocialButton(FontAwesomeIcons.linkedin, TextContent.linkedinLabel, AppConfig.linkedinUrl),
                     ],
                   ),
                   const SizedBox(height: AppConfig.spacingXLarge),
@@ -104,12 +96,11 @@ class PortfolioHomePage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppConfig.buttonBorderRadius),
                       ),
-                      textStyle: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
+                      textStyle: AppTextStyles.buttonText,
                       elevation: 0,
                     ),
                     icon: const Icon(Icons.mail_outline, color: Colors.white),
-                    label: const Text('Say Hello'),
+                    label: const Text(TextContent.sayHelloButton),
                     onPressed: () => _launchUrl(AppConfig.emailUrl),
                   ),
                   const SizedBox(height: AppConfig.spacingFooter),
@@ -284,25 +275,19 @@ class _Footer extends StatelessWidget {
       },
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.blueAccent,
-          decoration: TextDecoration.underline,
-          fontSize: 14,
-        ),
+        style: AppTextStyles.footerText,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14);
-    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'This page was proudly (and quickly) vibe-coded.',
-          style: textStyle,
+          TextContent.footerTagline,
+          style: AppTextStyles.footerBodyText,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppConfig.spacingTiny),
@@ -310,8 +295,8 @@ class _Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('You can check out the source code ', style: textStyle),
-            _buildLink('here', AppConfig.repoUrl),
+            Text(TextContent.sourceCodePrefix, style: AppTextStyles.footerBodyText),
+            _buildLink(TextContent.sourceCodeLink, AppConfig.repoUrl),
           ],
         ),
       ],
@@ -339,7 +324,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
     
     // Rotation animation
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: AppConfig.avatarRotationDurationMs),
       vsync: this,
     );
     _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -362,7 +347,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Nice to see you! 👋'),
+        content: const Text(TextContent.avatarGreeting),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.black87,
@@ -391,7 +376,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
             angle: _rotationAnimation.value * 2 * 3.14159,
             child: CircleAvatar(
               radius: AppConfig.avatarRadius,
-              backgroundImage: const AssetImage('assets/avatar.png'),
+              backgroundImage: AssetImage(AppConfig.avatarImagePath),
               backgroundColor: Colors.transparent,
             ),
           );
