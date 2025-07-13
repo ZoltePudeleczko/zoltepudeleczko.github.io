@@ -77,11 +77,7 @@ class PortfolioHomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircleAvatar(
-                    radius: AppConfig.avatarRadius,
-                    backgroundImage: AssetImage('assets/avatar.png'),
-                    backgroundColor: Colors.transparent,
-                  ),
+                  const AnimatedAvatar(),
                   const SizedBox(height: AppConfig.spacingLarge),
                   const AnimatedNameRow(),
                   const SizedBox(height: AppConfig.spacingMedium),
@@ -319,6 +315,88 @@ class _Footer extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class AnimatedAvatar extends StatefulWidget {
+  const AnimatedAvatar({super.key});
+
+  @override
+  State<AnimatedAvatar> createState() => _AnimatedAvatarState();
+}
+
+class _AnimatedAvatarState extends State<AnimatedAvatar>
+    with TickerProviderStateMixin {
+  late AnimationController _rotationController;
+  late Animation<double> _rotationAnimation;
+  
+  bool _isAnimating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Rotation animation
+    _rotationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _rotationController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  void _triggerAnimation() {
+    if (_isAnimating) return;
+    
+    setState(() {
+      _isAnimating = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Nice to see you! 👋'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.black87,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(20),
+      ),
+    );
+
+    _triggerRotationAnimation();
+  }
+
+  void _triggerRotationAnimation() async {
+    await _rotationController.forward();
+    await _rotationController.reverse();
+    setState(() => _isAnimating = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _triggerAnimation,
+      child: AnimatedBuilder(
+        animation: _rotationAnimation,
+        builder: (context, child) {
+          return Transform.rotate(
+            angle: _rotationAnimation.value * 2 * 3.14159,
+            child: CircleAvatar(
+              radius: AppConfig.avatarRadius,
+              backgroundImage: const AssetImage('assets/avatar.png'),
+              backgroundColor: Colors.transparent,
+            ),
+          );
+        },
+      ),
     );
   }
 }
