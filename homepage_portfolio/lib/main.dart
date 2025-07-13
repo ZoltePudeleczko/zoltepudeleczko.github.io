@@ -53,6 +53,14 @@ class PortfolioHomePage extends StatelessWidget {
     }
   }
 
+  Widget _buildSocialButton(IconData icon, String tooltip, String url) {
+    return IconButton(
+      icon: FaIcon(icon),
+      tooltip: tooltip,
+      onPressed: () => _launchUrl(url),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,27 +92,8 @@ class PortfolioHomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.github),
-                        tooltip: 'GitHub',
-                        onPressed: () => _launchUrl(AppConfig.githubUrl),
-                      ),
-                      // Temporary hide youtube and x
-                      // IconButton(
-                      //   icon: const FaIcon(FontAwesomeIcons.youtube),
-                      //   tooltip: 'YouTube',
-                      //   onPressed: () => _launchUrl(AppConfig.youtubeUrl),
-                      // ),
-                      // IconButton(
-                      //   icon: const FaIcon(FontAwesomeIcons.xTwitter),
-                      //   tooltip: 'X',
-                      //   onPressed: () => _launchUrl(AppConfig.xUrl),
-                      // ),
-                      IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.linkedin),
-                        tooltip: 'LinkedIn',
-                        onPressed: () => _launchUrl(AppConfig.linkedinUrl),
-                      ),
+                      _buildSocialButton(FontAwesomeIcons.github, 'GitHub', AppConfig.githubUrl),
+                      _buildSocialButton(FontAwesomeIcons.linkedin, 'LinkedIn', AppConfig.linkedinUrl),
                     ],
                   ),
                   const SizedBox(height: AppConfig.spacingXLarge),
@@ -148,17 +137,10 @@ class AnimatedNameRow extends StatefulWidget {
 
 class _AnimatedNameRowState extends State<AnimatedNameRow> {
   bool _animationFinished = false;
-  bool _shouldWrap = false;
-  double _lastScreenWidth = 0;
 
   @override
   void initState() {
     super.initState();
-    // Calculate if the text will wrap
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _calculateWrap();
-    });
-    
     Future.delayed(const Duration(milliseconds: AppConfig.animationDurationMs), () {
       if (mounted) {
         setState(() {
@@ -168,118 +150,69 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
     });
   }
 
-  void _calculateWrap() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Only recalculate if screen width actually changed
-    if (screenWidth == _lastScreenWidth) return;
-    _lastScreenWidth = screenWidth;
-    
-    // Account for padding (24px on each side) and some extra margin for safety
-    final availableWidth = screenWidth - 80;
-    final textStyle = Theme.of(context).textTheme.headlineLarge;
-    
-    // Calculate width of first name
-    final firstTextPainter = TextPainter(
-      text: TextSpan(text: AppConfig.firstName, style: textStyle),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
-    
-    // Calculate width of last name with underscore
-    final secondTextPainter = TextPainter(
-      text: TextSpan(text: '${AppConfig.lastName}_', style: textStyle),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
-    
-    // Add 8px spacing between texts
-    final totalWidth = firstTextPainter.width + 8 + secondTextPainter.width;
-    
-    setState(() {
-      _shouldWrap = totalWidth > availableWidth;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Check if screen size changed and recalculate if needed
-    final currentScreenWidth = MediaQuery.of(context).size.width;
-    if (currentScreenWidth != _lastScreenWidth) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _calculateWrap();
-        }
-      });
-    }
-    
-    if (_shouldWrap) {
-      // If wrapping is needed, use Column instead of Wrap
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            AppConfig.firstName,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(height: AppConfig.spacingSmall),
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final textStyle = Theme.of(context).textTheme.headlineLarge;
+        
+        final firstTextPainter = TextPainter(
+          text: TextSpan(text: AppConfig.firstName, style: textStyle),
+          textDirection: TextDirection.ltr,
+          textScaler: MediaQuery.textScalerOf(context),
+        )..layout();
+        
+        final secondTextPainter = TextPainter(
+          text: TextSpan(text: '${AppConfig.lastName}_', style: textStyle),
+          textDirection: TextDirection.ltr,
+          textScaler: MediaQuery.textScalerOf(context),
+        )..layout();
+        
+        final totalWidth = firstTextPainter.width + AppConfig.spacingSmall + secondTextPainter.width;
+        final shouldWrap = totalWidth > constraints.maxWidth;
+        
+        final nameWidget = _animationFinished
+            ? Text(AppConfig.lastName, style: textStyle)
+            : AnimatedTextKit(
+                repeatForever: false,
+                animatedTexts: [
+                  TyperAnimatedText(
+                    AppConfig.lastName,
+                    textStyle: textStyle,
+                    speed: const Duration(milliseconds: AppConfig.typingSpeedMs),
+                  ),
+                ],
+                isRepeatingAnimation: false,
+              );
+        
+        if (shouldWrap) {
+          return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (!_animationFinished)
-                AnimatedTextKit(
-                  repeatForever: false,
-                  animatedTexts: [
-                    TyperAnimatedText(
-                      AppConfig.lastName,
-                      textStyle: Theme.of(context).textTheme.headlineLarge,
-                      speed: const Duration(milliseconds: AppConfig.typingSpeedMs),
-                    ),
-                  ],
-                  isRepeatingAnimation: false,
-                )
-              else
-                Text(
-                  AppConfig.lastName,
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              BlinkingUnderscore(style: Theme.of(context).textTheme.headlineLarge),
+              Text(AppConfig.firstName, style: textStyle),
+              const SizedBox(height: AppConfig.spacingSmall),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  nameWidget,
+                  BlinkingUnderscore(style: textStyle),
+                ],
+              ),
             ],
-          ),
-        ],
-      );
-    } else {
-      // If no wrapping needed, use the original Wrap layout
-      return Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(
-            AppConfig.firstName,
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          const SizedBox(width: AppConfig.spacingSmall),
-          if (!_animationFinished)
-            AnimatedTextKit(
-              repeatForever: false,
-              animatedTexts: [
-                TyperAnimatedText(
-                  AppConfig.lastName,
-                  textStyle: Theme.of(context).textTheme.headlineLarge,
-                  speed: const Duration(milliseconds: AppConfig.typingSpeedMs),
-                ),
-              ],
-              isRepeatingAnimation: false,
-            )
-          else
-            Text(
-              AppConfig.lastName,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-          BlinkingUnderscore(style: Theme.of(context).textTheme.headlineLarge),
-        ],
-      );
-    }
+          );
+        } else {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(AppConfig.firstName, style: textStyle),
+              const SizedBox(width: AppConfig.spacingSmall),
+              nameWidget,
+              BlinkingUnderscore(style: textStyle),
+            ],
+          );
+        }
+      },
+    );
   }
 }
 
@@ -289,50 +222,17 @@ class ResponsiveDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodyMedium;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Measure widths
-        final textScaler = MediaQuery.textScalerOf(context);
-        final firstPainter = TextPainter(
-          text: TextSpan(text: '${AppConfig.descriptionFirstPart} ', style: textStyle),
-          textDirection: TextDirection.ltr,
-          textScaler: textScaler,
-        )..layout();
-        final secondPainter = TextPainter(
-          text: TextSpan(text: AppConfig.descriptionSecondPart, style: textStyle),
-          textDirection: TextDirection.ltr,
-          textScaler: textScaler,
-        )..layout();
-        final totalWidth = firstPainter.width + secondPainter.width;
-        if (totalWidth <= constraints.maxWidth) {
-          // Both fit on one line
-          return Text(
-            '${AppConfig.descriptionFirstPart} ${AppConfig.descriptionSecondPart}',
-            style: textStyle,
-            textAlign: TextAlign.center,
-          );
-        } else if (secondPainter.width <= constraints.maxWidth) {
-          // Only second part fits on its own line
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(AppConfig.descriptionFirstPart, style: textStyle, textAlign: TextAlign.center),
-              Text(AppConfig.descriptionSecondPart, style: textStyle, textAlign: TextAlign.center),
-            ],
-          );
-        } else {
-          // Second part is too long for one line, let it wrap naturally
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(AppConfig.descriptionFirstPart, style: textStyle, textAlign: TextAlign.center),
-              Text(AppConfig.descriptionSecondPart, style: textStyle, textAlign: TextAlign.center, softWrap: true),
-            ],
-          );
-        }
-      },
+    
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: textStyle,
+        children: [
+          TextSpan(text: AppConfig.descriptionFirstPart),
+          const TextSpan(text: ' '),
+          TextSpan(text: AppConfig.descriptionSecondPart),
+        ],
+      ),
     );
   }
 }
@@ -368,38 +268,45 @@ class _BlinkingUnderscoreState extends State<BlinkingUnderscore>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: _getUnderscoreWidth(context),
-      child: FadeTransition(
-        opacity: _opacity,
-        child: Text('_', style: widget.style),
-      ),
+    return FadeTransition(
+      opacity: _opacity,
+      child: Text('_', style: widget.style),
     );
-  }
-
-  double _getUnderscoreWidth(BuildContext context) {
-    final style = widget.style ?? DefaultTextStyle.of(context).style;
-    final painter = TextPainter(
-      text: TextSpan(text: '_', style: style),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.left,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
-    return painter.width;
   }
 }
 
 class _Footer extends StatelessWidget {
   const _Footer();
 
+  Widget _buildLink(String text, String url) {
+    return GestureDetector(
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.blueAccent,
+          decoration: TextDecoration.underline,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14);
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'This page was proudly (and quickly) vibe-coded.',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14),
+          style: textStyle,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppConfig.spacingTiny),
@@ -407,30 +314,8 @@ class _Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'You can check out the source code ',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 14,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            GestureDetector(
-              onTap: () async {
-                final uri = Uri.parse( AppConfig.repoUrl);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                }
-              },
-              child: Text(
-                'here',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.blueAccent,
-                      decoration: TextDecoration.underline,
-                      fontSize: 14,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            Text('You can check out the source code ', style: textStyle),
+            _buildLink('here', AppConfig.repoUrl),
           ],
         ),
       ],
