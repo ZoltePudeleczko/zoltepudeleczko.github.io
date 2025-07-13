@@ -15,7 +15,7 @@ class AppConfig {
   
   // Description
   static const String descriptionFirstPart = 'System design. Programming.';
-  static const String descriptionSecondPart = 'Getting things done and done and done done.';
+  static const String descriptionSecondPart = 'Getting things done.';
   
   // Repository
   static const String repoUrl = 'https://github.com/ZoltePudeleczko/HomePageV2';

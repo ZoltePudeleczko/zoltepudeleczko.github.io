@@ -85,16 +85,17 @@ class PortfolioHomePage extends StatelessWidget {
                     tooltip: 'GitHub',
                     onPressed: () => _launchUrl(AppConfig.githubUrl),
                   ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.youtube),
-                    tooltip: 'YouTube',
-                    onPressed: () => _launchUrl(AppConfig.youtubeUrl),
-                  ),
-                  IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.xTwitter),
-                    tooltip: 'X',
-                    onPressed: () => _launchUrl(AppConfig.xUrl),
-                  ),
+                  // Temporary hide youtube and x
+                  // IconButton(
+                  //   icon: const FaIcon(FontAwesomeIcons.youtube),
+                  //   tooltip: 'YouTube',
+                  //   onPressed: () => _launchUrl(AppConfig.youtubeUrl),
+                  // ),
+                  // IconButton(
+                  //   icon: const FaIcon(FontAwesomeIcons.xTwitter),
+                  //   tooltip: 'X',
+                  //   onPressed: () => _launchUrl(AppConfig.xUrl),
+                  // ),
                   IconButton(
                     icon: const FaIcon(FontAwesomeIcons.linkedin),
                     tooltip: 'LinkedIn',
