@@ -266,16 +266,19 @@ class _Footer extends StatelessWidget {
   const _Footer();
 
   Widget _buildLink(String text, String url) {
-    return GestureDetector(
-      onTap: () async {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      },
-      child: Text(
-        text,
-        style: AppTextStyles.footerText,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () async {
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          }
+        },
+        child: Text(
+          text,
+          style: AppTextStyles.footerText,
+        ),
       ),
     );
   }
