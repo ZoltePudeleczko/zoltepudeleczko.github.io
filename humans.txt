@@ -1,0 +1,16 @@
+/* TEAM */
+Developer: Szymon Zborowski
+Site: https://zborowski.xyz
+Contact: szymon@zborowski.xyz
+
+/* PROJECTS */
+Tasks-Do-List: https://tasksdolist.zborowski.xyz
+Source: https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io
+
+/* TECHNOLOGY */
+Homepage: Flutter Web (zborowski.xyz)
+Tasks-Do-List pages: Static HTML/CSS
+Hosting: GitHub Pages
+Last update: 2025-08-09
+
+

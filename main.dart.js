@@ -60443,7 +60443,7 @@ A.VN.prototype={
 $0(){return this.a.kQ(this.b)},
 $S:0}
 A.VO.prototype={
-$0(){return this.a.kQ("mailto:szzborowski@gmail.com")},
+$0(){return this.a.kQ("mailto:szymon@zborowski.xyz")},
 $S:0}
 A.pP.prototype={
 ae(){return new A.EF()}}
@@ -60508,7 +60508,7 @@ A.Gm.prototype={
 PO(a,b){var s=null
 return A.BF(A.rp(s,A.is(a,B.Ks,s),B.as,!1,s,s,s,s,s,s,s,s,s,s,s,s,s,new A.a21(b),s,s,s,s,s,s),B.cf,s,s,s)},
 O(a){var s=t.g
-return A.a7t(A.c([A.is("This page was proudly (and quickly) vibe-coded.",B.i4.Hn(14),B.dc),B.Hx,A.nV(A.c([A.is("You can check out the source code ",B.i4.Hn(14),null),this.PO("here","https://github.com/ZoltePudeleczko/HomePageV2")],s),B.e7,B.bg)],s),B.bb,B.aH,B.bg)}}
+return A.a7t(A.c([A.is("This page was proudly (and quickly) vibe-coded.",B.i4.Hn(14),B.dc),B.Hx,A.nV(A.c([A.is("You can check out the source code ",B.i4.Hn(14),null),this.PO("here","https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io")],s),B.e7,B.bg)],s),B.bb,B.aH,B.bg)}}
 A.a21.prototype={
 $0(){var s=0,r=A.M(t.H),q=this,p
 var $async$$0=A.N(function(a,b){if(a===1)return A.J(b,r)
