@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks‑Do‑List — Google Tasks, done right</title>
+  <meta name="description" content="A clean, modern Chrome extension for Google Tasks. Multi‑account, multilingual, privacy‑first.">
+  <meta name="theme-color" content="#0ea5e9">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon48.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon128.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon128.png">
+  <style>
+    :root {
+      --bg-start: #0ea5e9;
+      --bg-end: #6366f1;
+      --text: #0f172a;
+      --muted: #475569;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --outline: #e2e8f0;
+      --tasks-color: #0ea5e9;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 960px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(2, 8, 23, 0.25);
+      overflow: hidden;
+    }
+    .content {
+      padding: 40px 28px;
+    }
+    @media (min-width: 720px) { .content { padding: 56px; } }
+    .brand { display: flex; align-items: baseline; gap: 16px; margin: 0 0 8px; flex-wrap: wrap; }
+    .brand img { width: 56px; height: 56px; border-radius: 12px; align-self: center; }
+    .title {
+      font-size: 40px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    /* Make brand/title behave like an icon: not selectable or draggable */
+    .brand, .brand * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .byline { font-size: 14px; color: var(--muted); font-weight: 600; align-self: flex-end; padding-bottom: 4px; }
+    @media (min-width: 720px) { .title { font-size: 56px; } }
+    .tagline {
+      font-size: 18px;
+      color: var(--muted);
+      margin: 6px 0 28px;
+    }
+    .badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 22px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid #e2e8f0;
+    }
+    .tasks-word { color: var(--tasks-color); }
+    .cta-primary {
+      display: flex;
+      justify-content: center;
+      margin: 24px 0 10px;
+    }
+    .cta-primary .btn.primary {
+      font-size: 18px;
+      padding: 16px 24px;
+      min-height: 56px;
+      border-radius: 12px;
+    }
+    @media (min-width: 720px) { .cta-primary .btn.primary { font-size: 20px; padding: 18px 28px; min-height: 60px; } }
+    .cta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 24px 0 8px;
+    }
+    @media (min-width: 560px) { .cta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 880px) { .cta { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      border: 1px solid var(--outline);
+      color: var(--text);
+      background: #ffffff;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, color 160ms ease;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    }
+    a.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,23,42,0.12); }
+    a.btn.primary { background: var(--primary); color: #fff; border-color: transparent; }
+    a.btn.primary:hover { background: var(--primary-hover); }
+    a.btn.ghost { background: transparent; }
+    .store-badge-link { display: inline-block; border-radius: 12px; transition: transform 160ms ease, box-shadow 160ms ease; }
+    .store-badge-link:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,23,42,0.12); }
+    .store-badge-link:focus-visible { outline: 3px solid #93c5fd; outline-offset: 3px; border-radius: 14px; }
+    .store-badge-link img {
+      height: 60px;
+      width: auto;
+      display: block;
+      filter: none;
+    }
+    .soon {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #0ea5e9;
+      background: #e0f2fe;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .footer {
+      padding: 18px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #eef2f7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <section class="content">
+      <div class="brand">
+        <img src="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon128.png" alt="Tasks‑Do‑List icon" width="56" height="56" draggable="false" />
+        <h1 class="title"><span class="tasks-word">Tasks</span>‑Do‑List</h1>
+        <span class="byline">by Szymon Zborowski</span>
+      </div>
+      <p class="tagline">The one and only Google Tasks Chrome extension you'll ever need.</p>
+      <div class="badges" aria-label="Highlights">
+        <span class="chip">Open‑source</span>
+        <span class="chip">Ad‑free</span>
+      </div>
+      <div class="cta-primary" aria-label="Install">
+        <a class="store-badge-link" href="https://chromewebstore.google.com/detail/obfmnomfnbeodiikmodplaibanngplnb" target="_blank" rel="noopener noreferrer" aria-label="Available in the Chrome Web Store">
+          <img src="https://developer.chrome.com/static/docs/webstore/branding/image/iNEddTyWiMfLSwFD6qGq.png" alt="Available in the Chrome Web Store" />
+        </a>
+      </div>
+      <div class="cta" aria-label="Secondary actions">
+        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension" target="_blank" rel="noopener noreferrer" title="View the repository on GitHub">View on GitHub</a>
+        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or request a feature">Submit an Issue</a>
+        <a class="btn ghost" href="mailto:tasksdolist@zborowski.xyz" title="Send feedback by email">Send Feedback</a>
+      </div>
+    </section>
+    <section class="footer">
+      <a href="https://zborowski.xyz" target="_blank" rel="noopener noreferrer" title="Visit zborowski.xyz">zborowski.xyz</a>
+      <a href="privacypolicy/" title="Read the privacy policy">Privacy Policy</a>
+    </section>
+  </main>
+</body>
+</html>
