@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemaps for both served hosts
+Sitemap: https://zborowski.xyz/sitemap.xml
+Sitemap: https://tasksdolist.zborowski.xyz/sitemap.xml
+
+

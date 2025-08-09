@@ -1,0 +1,16 @@
+/* TEAM */
+Developer: Szymon Zborowski
+Contact: szymon@zborowski.xyz
+
+/* PROJECT */
+Tasks-Do-List: Chrome extension
+Homepage: https://tasksdolist.zborowski.xyz
+Privacy: https://tasksdolist.zborowski.xyz/privacypolicy/
+Source: https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io
+
+/* TECHNOLOGY */
+Static HTML/CSS
+Hosting: GitHub Pages
+Last update: 2025-08-09
+
+

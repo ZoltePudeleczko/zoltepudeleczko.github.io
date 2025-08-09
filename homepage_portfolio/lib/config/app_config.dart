@@ -11,14 +11,14 @@ class AppConfig {
   static const String linkedinUrl = 'https://linkedin.com/in/szymon-zborowski';
   
   // Contact
-  static const String emailUrl = 'mailto:szzborowski@gmail.com';
+  static const String emailUrl = 'mailto:szymon@zborowski.xyz';
   
   // Description
   static const String descriptionFirstPart = 'System design. Programming.';
   static const String descriptionSecondPart = 'Getting things done.';
   
   // Repository
-  static const String repoUrl = 'https://github.com/ZoltePudeleczko/HomePageV2';
+  static const String repoUrl = 'https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io';
   
   // Animation Settings
   static const int typingSpeedMs = 180;

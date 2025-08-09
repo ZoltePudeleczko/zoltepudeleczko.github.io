@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tasksdolist.zborowski.xyz/sitemap.xml
+
+
