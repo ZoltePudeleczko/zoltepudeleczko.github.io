@@ -104,7 +104,8 @@ class PortfolioHomePage extends StatelessWidget {
                     onPressed: () => _launchUrl(AppConfig.emailUrl),
                   ),
                   const SizedBox(height: AppConfig.spacingFooter),
-                  const _Footer(),
+                  const PortfolioSection(),
+                  const SizedBox(height: AppConfig.spacingFooter),
                 ],
               ),
             ),
@@ -324,8 +325,6 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
   @override
   void initState() {
     super.initState();
-    
-    // Rotation animation
     _rotationController = AnimationController(
       duration: const Duration(milliseconds: AppConfig.avatarRotationDurationMs),
       vsync: this,
@@ -384,6 +383,228 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class PortfolioSection extends StatefulWidget {
+  const PortfolioSection({super.key});
+
+  @override
+  State<PortfolioSection> createState() => _PortfolioSectionState();
+}
+
+class _PortfolioSectionState extends State<PortfolioSection>
+    with SingleTickerProviderStateMixin {
+  late final PageController _pageController;
+  late final AnimationController _arrowController;
+  late final Animation<Offset> _arrowSlide;
+  late final Animation<double> _arrowOpacity;
+  final GlobalKey _carouselKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.9, keepPage: true);
+    _arrowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+    final curve = CurvedAnimation(parent: _arrowController, curve: Curves.easeInOut);
+    _arrowSlide = Tween<Offset>(begin: const Offset(0, -0.15), end: const Offset(0, 0.15)).animate(curve);
+    _arrowOpacity = Tween<double>(begin: 0.6, end: 1.0).animate(curve);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _arrowController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final projects = <_ProjectItem>[
+      _ProjectItem(
+        title: TextContent.tasksDoListName,
+        url: AppConfig.tasksDoListUrl,
+        previewAsset: AppConfig.tasksDoListPreviewAsset,
+      ),
+    ];
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: AppConfig.spacingXLarge),
+        const _Footer(),
+        const SizedBox(height: AppConfig.spacingLarge),
+        SizedBox(
+          height: 56,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: 280,
+                height: 4,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black26,
+                      Colors.transparent,
+                    ],
+                    stops: [0.0, 0.5, 1.0],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              GestureDetector(
+                onTap: () async {
+                  final contextToShow = _carouselKey.currentContext;
+                  if (contextToShow != null) {
+                    await Scrollable.ensureVisible(
+                      contextToShow,
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                },
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: RepaintBoundary(
+                    child: FadeTransition(
+                      opacity: _arrowOpacity,
+                      child: SlideTransition(
+                        position: _arrowSlide,
+                        child: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 30,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppConfig.spacingLarge),
+        SizedBox(
+          height: 220,
+          key: _carouselKey,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              final item = projects[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: _ProjectCard(
+                      item: item,
+                      onTap: () => _openUrl(item.url),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProjectItem {
+  final String title;
+  final String url;
+  final String? previewAsset; // asset path under `assets/`
+
+  const _ProjectItem({
+    required this.title,
+    required this.url,
+    this.previewAsset,
+  });
+}
+
+class _ProjectCard extends StatelessWidget {
+  final _ProjectItem item;
+  final VoidCallback onTap;
+  const _ProjectCard({
+    required this.item,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const double radius = 16;
+    return Tooltip(
+      message: item.title,
+      waitDuration: const Duration(milliseconds: 200),
+      child: Material(
+        color: Colors.transparent,
+        elevation: 2,
+        borderRadius: BorderRadius.circular(radius),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          splashColor: Colors.white24,
+          highlightColor: Colors.white10,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (item.previewAsset != null && item.previewAsset!.isNotEmpty)
+                Image.asset(
+                  item.previewAsset!,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.centerLeft,
+                  errorBuilder: (context, error, stack) => Container(color: Colors.black12),
+                )
+              else
+                Container(color: Colors.black12),
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black26],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 24.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: onTap,
+                    child: const Text(TextContent.viewProjectCta),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

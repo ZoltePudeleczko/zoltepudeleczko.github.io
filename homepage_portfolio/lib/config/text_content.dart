@@ -13,4 +13,8 @@ class TextContent {
   
   // Avatar Animation
   static const String avatarGreeting = 'Nice to see you! 👋';
+  
+  // Portfolio / Projects
+  static const String tasksDoListName = 'Tasks-Do-List';
+  static const String viewProjectCta = 'View Project';
 } 

@@ -20,6 +20,11 @@ class AppConfig {
   // Repository
   static const String repoUrl = 'https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io';
   
+  // Portfolio / Projects
+  static const String tasksDoListUrl = 'https://tasksdolist.zborowski.xyz';
+  // Preview image (bundled asset). Place the file at `assets/tasksdolist_preview.png`.
+  static const String tasksDoListPreviewAsset = 'assets/tasksdolist_preview.png';
+  
   // Animation Settings
   static const int typingSpeedMs = 180;
   static const int animationDurationMs = 1920; // 9 letters * 180ms + 300ms buffer
