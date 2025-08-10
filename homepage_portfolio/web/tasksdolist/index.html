@@ -26,7 +26,7 @@
       --tasks-color: #0ea5e9;
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { height: auto; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
@@ -34,6 +34,7 @@
       background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
       display: grid;
       place-items: center;
+      min-height: 100vh;
       padding: 24px;
     }
     .card {
@@ -104,7 +105,7 @@
       margin: 24px 0 8px;
     }
     @media (min-width: 560px) { .cta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (min-width: 880px) { .cta { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (min-width: 880px) { .cta { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
     a.btn {
       display: inline-flex;
       align-items: center;
@@ -117,13 +118,17 @@
       border: 1px solid var(--outline);
       color: var(--text);
       background: #ffffff;
+      white-space: nowrap;
       transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, color 160ms ease;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     }
+    a.btn svg { width: 18px; height: 18px; flex: 0 0 auto; }
     a.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,23,42,0.12); }
     a.btn.primary { background: var(--primary); color: #fff; border-color: transparent; }
     a.btn.primary:hover { background: var(--primary-hover); }
     a.btn.ghost { background: transparent; }
+    a.btn.bmc { background: #ffdd00; color: #000; border-color: #e6c200; }
+    a.btn.bmc:hover { background: #f4c700; }
     .store-badge-link { display: inline-block; border-radius: 12px; transition: transform 160ms ease, box-shadow 160ms ease; }
     .store-badge-link:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,23,42,0.12); }
     .store-badge-link:focus-visible { outline: 3px solid #93c5fd; outline-offset: 3px; border-radius: 14px; }
@@ -176,9 +181,35 @@
         </a>
       </div>
       <div class="cta" aria-label="Secondary actions">
-        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension" target="_blank" rel="noopener noreferrer" title="View the repository on GitHub">View on GitHub</a>
-        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or request a feature">Submit an Issue</a>
-        <a class="btn ghost" href="mailto:tasksdolist@zborowski.xyz" title="Send feedback by email">Send Feedback</a>
+        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension" target="_blank" rel="noopener noreferrer" title="View the repository on GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.475 2 2 6.484 2 12.017c0 4.425 2.865 8.177 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.155-1.109-1.463-1.109-1.463-.908-.62.069-.607.069-.607 1.003.07 1.531 1.031 1.531 1.031.892 1.529 2.341 1.088 2.91.833.091-.647.35-1.088.636-1.338-2.221-.253-4.555-1.112-4.555-4.945 0-1.092.39-1.986 1.029-2.685-.103-.253-.446-1.272.098-2.65 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0 1 12 7.803a9.56 9.56 0 0 1 2.504.336c1.909-1.294 2.748-1.025 2.748-1.025.546 1.378.202 2.397.099 2.65.64.699 1.028 1.593 1.028 2.685 0 3.842-2.337 4.688-4.565 4.938.359.31.678.92.678 1.855 0 1.338-.012 2.415-.012 2.741 0 .267.18.58.688.481C19.137 20.19 22 16.44 22 12.017 22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>View on GitHub</span>
+        </a>
+        <a class="btn" href="https://github.com/ZoltePudeleczko/tasks-do-list-extension/issues" target="_blank" rel="noopener noreferrer" title="Report a bug or request a feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M12 8v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+          </svg>
+          <span>Submit an Issue</span>
+        </a>
+        <a class="btn ghost" href="mailto:tasksdolist@zborowski.xyz" title="Send feedback by email">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3" y="7" width="18" height="10" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M3 8l9 6 9-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Send Feedback</span>
+        </a>
+        <a class="btn bmc" href="https://buymeacoffee.com/zoltepudeleczko" target="_blank" rel="noopener noreferrer" title="Buy me a coffee">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M5 8h10v5a5 5 0 0 1-5 5 5 5 0 0 1-5-5V8z" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M15 8h3a2.5 2.5 0 0 1 0 5h-3" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M4 20h12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span>Buy me a coffee</span>
+        </a>
       </div>
     </section>
     <section class="footer">
