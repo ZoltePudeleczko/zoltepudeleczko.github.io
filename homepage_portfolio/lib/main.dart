@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -56,61 +57,84 @@ class PortfolioHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppConfig.horizontalPadding),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const AnimatedAvatar(),
-                  const SizedBox(height: AppConfig.spacingLarge),
-                  const AnimatedNameRow(),
-                  const SizedBox(height: AppConfig.spacingMedium),
-                  Text(AppConfig.title, style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: AppConfig.spacingLarge),
-                  const ResponsiveDescription(),
-                  const SizedBox(height: AppConfig.spacingXLarge),
-                  Row(
+      body: Stack(
+        children: [
+          const AnimatedBackground(),
+          SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalPadding,
+                  ),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildSocialButton(FontAwesomeIcons.github, TextContent.githubLabel, AppConfig.githubUrl),
-                      _buildSocialButton(FontAwesomeIcons.linkedin, TextContent.linkedinLabel, AppConfig.linkedinUrl),
+                      const AnimatedAvatar(),
+                      const SizedBox(height: AppConfig.spacingLarge),
+                      const AnimatedNameRow(),
+                      const SizedBox(height: AppConfig.spacingMedium),
+                      Text(
+                        AppConfig.title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppConfig.spacingLarge),
+                      const ResponsiveDescription(),
+                      const SizedBox(height: AppConfig.spacingXLarge),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildSocialButton(
+                            FontAwesomeIcons.github,
+                            TextContent.githubLabel,
+                            AppConfig.githubUrl,
+                          ),
+                          _buildSocialButton(
+                            FontAwesomeIcons.linkedin,
+                            TextContent.linkedinLabel,
+                            AppConfig.linkedinUrl,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppConfig.spacingXLarge),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppConfig.buttonHorizontalPadding,
+                            vertical: AppConfig.buttonVerticalPadding,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppConfig.buttonBorderRadius,
+                            ),
+                          ),
+                          textStyle: AppTextStyles.buttonText,
+                          elevation: 0,
+                        ),
+                        icon: const Icon(
+                          Icons.mail_outline,
+                          color: Colors.white,
+                        ),
+                        label: const Text(TextContent.sayHelloButton),
+                        onPressed: () => _launchUrl(AppConfig.emailUrl),
+                      ),
+                      const SizedBox(height: AppConfig.spacingFooter),
+                      const PortfolioSection(),
+                      const SizedBox(height: AppConfig.spacingFooter),
                     ],
                   ),
-                  const SizedBox(height: AppConfig.spacingXLarge),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppConfig.buttonHorizontalPadding,
-                        vertical: AppConfig.buttonVerticalPadding,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppConfig.buttonBorderRadius),
-                      ),
-                      textStyle: AppTextStyles.buttonText,
-                      elevation: 0,
-                    ),
-                    icon: const Icon(Icons.mail_outline, color: Colors.white),
-                    label: const Text(TextContent.sayHelloButton),
-                    onPressed: () => _launchUrl(AppConfig.emailUrl),
-                  ),
-                  const SizedBox(height: AppConfig.spacingFooter),
-                  const PortfolioSection(),
-                  const SizedBox(height: AppConfig.spacingFooter),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -129,13 +153,16 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: AppConfig.animationDurationMs), () {
-      if (mounted) {
-        setState(() {
-          _animationFinished = true;
-        });
-      }
-    });
+    Future.delayed(
+      const Duration(milliseconds: AppConfig.animationDurationMs),
+      () {
+        if (mounted) {
+          setState(() {
+            _animationFinished = true;
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -143,36 +170,42 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final textStyle = Theme.of(context).textTheme.headlineLarge;
-        
+
         final firstTextPainter = TextPainter(
           text: TextSpan(text: AppConfig.firstName, style: textStyle),
           textDirection: TextDirection.ltr,
           textScaler: MediaQuery.textScalerOf(context),
         )..layout();
-        
+
         final secondTextPainter = TextPainter(
           text: TextSpan(text: '${AppConfig.lastName}_', style: textStyle),
           textDirection: TextDirection.ltr,
           textScaler: MediaQuery.textScalerOf(context),
         )..layout();
-        
-        final totalWidth = firstTextPainter.width + AppConfig.spacingSmall + secondTextPainter.width;
+
+        final totalWidth =
+            firstTextPainter.width +
+            AppConfig.spacingSmall +
+            secondTextPainter.width;
         final shouldWrap = totalWidth > constraints.maxWidth;
-        
-        final nameWidget = _animationFinished
-            ? Text(AppConfig.lastName, style: textStyle)
-            : AnimatedTextKit(
-                repeatForever: false,
-                animatedTexts: [
-                  TyperAnimatedText(
-                    AppConfig.lastName,
-                    textStyle: textStyle,
-                    speed: const Duration(milliseconds: AppConfig.typingSpeedMs),
-                  ),
-                ],
-                isRepeatingAnimation: false,
-              );
-        
+
+        final nameWidget =
+            _animationFinished
+                ? Text(AppConfig.lastName, style: textStyle)
+                : AnimatedTextKit(
+                  repeatForever: false,
+                  animatedTexts: [
+                    TyperAnimatedText(
+                      AppConfig.lastName,
+                      textStyle: textStyle,
+                      speed: const Duration(
+                        milliseconds: AppConfig.typingSpeedMs,
+                      ),
+                    ),
+                  ],
+                  isRepeatingAnimation: false,
+                );
+
         if (shouldWrap) {
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -181,10 +214,7 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
               const SizedBox(height: AppConfig.spacingSmall),
               Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  nameWidget,
-                  BlinkingUnderscore(style: textStyle),
-                ],
+                children: [nameWidget, BlinkingUnderscore(style: textStyle)],
               ),
             ],
           );
@@ -210,7 +240,7 @@ class ResponsiveDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.bodyMedium;
-    
+
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -243,7 +273,9 @@ class _BlinkingUnderscoreState extends State<BlinkingUnderscore>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: AppConfig.underscoreBlinkDurationMs),
+      duration: const Duration(
+        milliseconds: AppConfig.underscoreBlinkDurationMs,
+      ),
     )..repeat(reverse: true);
     _opacity = Tween<double>(begin: 1.0, end: 0.0).animate(_controller);
   }
@@ -276,10 +308,7 @@ class _Footer extends StatelessWidget {
             await launchUrl(uri, mode: LaunchMode.externalApplication);
           }
         },
-        child: Text(
-          text,
-          style: AppTextStyles.footerText,
-        ),
+        child: Text(text, style: AppTextStyles.footerText),
       ),
     );
   }
@@ -299,7 +328,10 @@ class _Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(TextContent.sourceCodePrefix, style: AppTextStyles.footerBodyText),
+            Text(
+              TextContent.sourceCodePrefix,
+              style: AppTextStyles.footerBodyText,
+            ),
             _buildLink(TextContent.sourceCodeLink, AppConfig.repoUrl),
           ],
         ),
@@ -319,14 +351,16 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
     with TickerProviderStateMixin {
   late AnimationController _rotationController;
   late Animation<double> _rotationAnimation;
-  
+
   bool _isAnimating = false;
 
   @override
   void initState() {
     super.initState();
     _rotationController = AnimationController(
-      duration: const Duration(milliseconds: AppConfig.avatarRotationDurationMs),
+      duration: const Duration(
+        milliseconds: AppConfig.avatarRotationDurationMs,
+      ),
       vsync: this,
     );
     _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -342,7 +376,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
 
   void _triggerAnimation() {
     if (_isAnimating) return;
-    
+
     setState(() {
       _isAnimating = true;
     });
@@ -411,8 +445,14 @@ class _PortfolioSectionState extends State<PortfolioSection>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     )..repeat(reverse: true);
-    final curve = CurvedAnimation(parent: _arrowController, curve: Curves.easeInOut);
-    _arrowSlide = Tween<Offset>(begin: const Offset(0, -0.15), end: const Offset(0, 0.15)).animate(curve);
+    final curve = CurvedAnimation(
+      parent: _arrowController,
+      curve: Curves.easeInOut,
+    );
+    _arrowSlide = Tween<Offset>(
+      begin: const Offset(0, -0.15),
+      end: const Offset(0, 0.15),
+    ).animate(curve);
     _arrowOpacity = Tween<double>(begin: 0.6, end: 1.0).animate(curve);
   }
 
@@ -544,10 +584,7 @@ class _ProjectItem {
 class _ProjectCard extends StatelessWidget {
   final _ProjectItem item;
   final VoidCallback onTap;
-  const _ProjectCard({
-    required this.item,
-    required this.onTap,
-  });
+  const _ProjectCard({required this.item, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -572,7 +609,9 @@ class _ProjectCard extends StatelessWidget {
                   item.previewAsset!,
                   fit: BoxFit.cover,
                   alignment: Alignment.centerLeft,
-                  errorBuilder: (context, error, stack) => Container(color: Colors.black12),
+                  errorBuilder:
+                      (context, error, stack) =>
+                          Container(color: Colors.black12),
                 )
               else
                 Container(color: Colors.black12),
@@ -594,8 +633,13 @@ class _ProjectCard extends StatelessWidget {
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     onPressed: onTap,
                     child: const Text(TextContent.viewProjectCta),
@@ -607,5 +651,172 @@ class _ProjectCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// Animated Background with floating symbols
+class AnimatedBackground extends StatefulWidget {
+  const AnimatedBackground({super.key});
+
+  @override
+  State<AnimatedBackground> createState() => _AnimatedBackgroundState();
+}
+
+class _AnimatedBackgroundState extends State<AnimatedBackground>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late List<FloatingSymbol> _symbols;
+  final math.Random _random = math.Random();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 60),
+    )..repeat();
+
+    // Initialize floating symbols
+    _symbols = List.generate(20, (index) => _createSymbol());
+  }
+
+  FloatingSymbol _createSymbol() {
+    const symbols = [
+      '<>',
+      '{}',
+      '[]',
+      '()',
+      '//',
+      '/*',
+      '*/',
+      '==',
+      '!=',
+      '++',
+      '--',
+      '=>',
+      '&&',
+      '||',
+      '<<',
+      '>>',
+      'var',
+      'new',
+      'C#',
+      '.NET',
+      'if',
+      'for',
+      'try',
+    ];
+    return FloatingSymbol(
+      symbol: symbols[_random.nextInt(symbols.length)],
+      x: _random.nextDouble(),
+      y: _random.nextDouble(),
+      speed: 0.3 + _random.nextDouble() * 0.7, // 0.3 to 1.0
+      size: 16.0 + _random.nextDouble() * 24.0, // 16 to 40
+      opacity: 0.03 + _random.nextDouble() * 0.07, // 0.03 to 0.1
+      rotation: _random.nextDouble() * 2 * math.pi,
+      rotationSpeed: (_random.nextDouble() - 0.5) * 0.5,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: BackgroundPainter(
+            symbols: _symbols,
+            progress: _controller.value,
+          ),
+          child: Container(),
+        );
+      },
+    );
+  }
+}
+
+class FloatingSymbol {
+  final String symbol;
+  final double x;
+  final double y;
+  final double speed;
+  final double size;
+  final double opacity;
+  final double rotation;
+  final double rotationSpeed;
+
+  FloatingSymbol({
+    required this.symbol,
+    required this.x,
+    required this.y,
+    required this.speed,
+    required this.size,
+    required this.opacity,
+    required this.rotation,
+    required this.rotationSpeed,
+  });
+}
+
+class BackgroundPainter extends CustomPainter {
+  final List<FloatingSymbol> symbols;
+  final double progress;
+
+  BackgroundPainter({required this.symbols, required this.progress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var symbol in symbols) {
+      // Calculate position with parallax effect
+      final yOffset = (progress * symbol.speed) % 1.0;
+      final currentY = ((symbol.y + yOffset) % 1.0) * size.height;
+      final currentX = symbol.x * size.width;
+
+      // Calculate rotation
+      final currentRotation =
+          symbol.rotation + (progress * symbol.rotationSpeed * 2 * math.pi);
+
+      // Create text painter
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: symbol.symbol,
+          style: TextStyle(
+            fontSize: symbol.size,
+            color: Colors.black.withOpacity(symbol.opacity),
+            fontWeight: FontWeight.w300,
+            fontFamily: 'monospace',
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      // Save canvas state
+      canvas.save();
+
+      // Translate to position
+      canvas.translate(currentX, currentY);
+
+      // Rotate
+      canvas.rotate(currentRotation);
+
+      // Draw text centered
+      textPainter.paint(
+        canvas,
+        Offset(-textPainter.width / 2, -textPainter.height / 2),
+      );
+
+      // Restore canvas state
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(BackgroundPainter oldDelegate) {
+    return oldDelegate.progress != progress;
   }
 }
