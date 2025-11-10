@@ -7,6 +7,14 @@ import 'config/app_config.dart';
 import 'config/text_content.dart';
 import 'config/text_styles.dart';
 
+// Shared URL launcher utility
+Future<void> launchUrlSafe(String url) async {
+  final uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+
 void main() {
   runApp(const PortfolioApp());
 }
@@ -39,18 +47,11 @@ class PortfolioApp extends StatelessWidget {
 class PortfolioHomePage extends StatelessWidget {
   const PortfolioHomePage({super.key});
 
-  void _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.platformDefault);
-    }
-  }
-
   Widget _buildSocialButton(IconData icon, String tooltip, String url) {
     return IconButton(
       icon: FaIcon(icon),
       tooltip: tooltip,
-      onPressed: () => _launchUrl(url),
+      onPressed: () => launchUrlSafe(url),
     );
   }
 
@@ -123,7 +124,7 @@ class PortfolioHomePage extends StatelessWidget {
                           color: Colors.white,
                         ),
                         label: const Text(TextContent.sayHelloButton),
-                        onPressed: () => _launchUrl(AppConfig.emailUrl),
+                        onPressed: () => launchUrlSafe(AppConfig.emailUrl),
                       ),
                       const SizedBox(height: AppConfig.spacingFooter),
                       const PortfolioSection(),
@@ -193,7 +194,6 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
             _animationFinished
                 ? Text(AppConfig.lastName, style: textStyle)
                 : AnimatedTextKit(
-                  repeatForever: false,
                   animatedTexts: [
                     TyperAnimatedText(
                       AppConfig.lastName,
@@ -239,18 +239,10 @@ class ResponsiveDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodyMedium;
-
-    return RichText(
+    return Text(
+      '${AppConfig.descriptionFirstPart} ${AppConfig.descriptionSecondPart}',
+      style: Theme.of(context).textTheme.bodyMedium,
       textAlign: TextAlign.center,
-      text: TextSpan(
-        style: textStyle,
-        children: [
-          TextSpan(text: AppConfig.descriptionFirstPart),
-          const TextSpan(text: ' '),
-          TextSpan(text: AppConfig.descriptionSecondPart),
-        ],
-      ),
     );
   }
 }
@@ -302,12 +294,7 @@ class _Footer extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () async {
-          final uri = Uri.parse(url);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.externalApplication);
-          }
-        },
+        onTap: () => launchUrlSafe(url),
         child: Text(text, style: AppTextStyles.footerText),
       ),
     );
@@ -409,7 +396,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
         animation: _rotationAnimation,
         builder: (context, child) {
           return Transform.rotate(
-            angle: _rotationAnimation.value * 2 * 3.14159,
+            angle: _rotationAnimation.value * 2 * math.pi,
             child: CircleAvatar(
               radius: AppConfig.avatarRadius,
               backgroundImage: AssetImage(AppConfig.avatarImagePath),
@@ -461,13 +448,6 @@ class _PortfolioSectionState extends State<PortfolioSection>
     _pageController.dispose();
     _arrowController.dispose();
     super.dispose();
-  }
-
-  Future<void> _openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
   }
 
   @override
@@ -556,7 +536,7 @@ class _PortfolioSectionState extends State<PortfolioSection>
                     constraints: const BoxConstraints(maxWidth: 720),
                     child: _ProjectCard(
                       item: item,
-                      onTap: () => _openUrl(item.url),
+                      onTap: () => launchUrlSafe(item.url),
                     ),
                   ),
                 ),

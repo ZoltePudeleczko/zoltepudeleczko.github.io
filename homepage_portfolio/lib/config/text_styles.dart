@@ -8,28 +8,25 @@ class AppTextStyles {
     color: Colors.black,
   );
 
-  static TextStyle get titleMedium => const TextStyle(
-    fontSize: 20,
-    color: Colors.black87,
-  );
+  static TextStyle get titleMedium =>
+      const TextStyle(fontSize: 20, color: Colors.black87);
 
-  static TextStyle get bodyMedium => const TextStyle(
-    fontSize: 16,
-    color: Colors.black54,
-  );
+  static TextStyle get bodyMedium =>
+      const TextStyle(fontSize: 16, color: Colors.black54);
 
   // Button text style
-  static TextStyle get buttonText => const TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-  );
+  static TextStyle get buttonText =>
+      const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
   // Footer text styles
-  static TextStyle get footerText => const TextStyle(
+  static const TextStyle footerText = TextStyle(
     color: Colors.blueAccent,
     decoration: TextDecoration.underline,
     fontSize: 14,
   );
 
-  static TextStyle get footerBodyText => bodyMedium.copyWith(fontSize: 14);
-} 
+  static const TextStyle footerBodyText = TextStyle(
+    fontSize: 14,
+    color: Colors.black54,
+  );
+}
