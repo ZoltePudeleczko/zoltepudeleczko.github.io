@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Ensure the script is run from main project directory
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -10,7 +11,7 @@ CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 CUSTOM_DOMAIN="$(tr -d '\r' < web/CNAME 2>/dev/null || echo "")"
 
 # Build and commit site to local gh-pages with peanut (no push)
-flutter pub global run peanut
+fvm flutter pub global run peanut
 
 # Create/switch to local gh-pages tracking the remote
 git fetch origin gh-pages || true
