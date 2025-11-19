@@ -16,5 +16,6 @@ class TextContent {
   
   // Portfolio / Projects
   static const String tasksDoListName = 'Tasks-Do-List';
+  static const String kodiGeforceNowName = 'Kodi GeForce Now Addon';
   static const String viewProjectCta = 'View Project';
 } 

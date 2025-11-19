@@ -418,7 +418,6 @@ class PortfolioSection extends StatefulWidget {
 
 class _PortfolioSectionState extends State<PortfolioSection>
     with SingleTickerProviderStateMixin {
-  late final PageController _pageController;
   late final AnimationController _arrowController;
   late final Animation<Offset> _arrowSlide;
   late final Animation<double> _arrowOpacity;
@@ -427,7 +426,6 @@ class _PortfolioSectionState extends State<PortfolioSection>
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.9, keepPage: true);
     _arrowController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
@@ -445,7 +443,6 @@ class _PortfolioSectionState extends State<PortfolioSection>
 
   @override
   void dispose() {
-    _pageController.dispose();
     _arrowController.dispose();
     super.dispose();
   }
@@ -457,6 +454,11 @@ class _PortfolioSectionState extends State<PortfolioSection>
         title: TextContent.tasksDoListName,
         url: AppConfig.tasksDoListUrl,
         previewAsset: AppConfig.tasksDoListPreviewAsset,
+      ),
+      _ProjectItem(
+        title: TextContent.kodiGeforceNowName,
+        url: AppConfig.kodiGeforceNowUrl,
+        previewAsset: AppConfig.kodiGeforceNowPreviewAsset,
       ),
     ];
 
@@ -520,29 +522,56 @@ class _PortfolioSectionState extends State<PortfolioSection>
           ),
         ),
         const SizedBox(height: AppConfig.spacingLarge),
-        SizedBox(
-          height: 220,
+        LayoutBuilder(
           key: _carouselKey,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: projects.length,
-            itemBuilder: (context, index) {
-              final item = projects[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 720),
-                    child: _ProjectCard(
-                      item: item,
-                      onTap: () => launchUrlSafe(item.url),
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < 800;
+            if (isNarrow) {
+              // Stack vertically on narrow screens
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: projects.map((item) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
                     ),
-                  ),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 720),
+                      child: SizedBox(
+                        height: 220,
+                        child: _ProjectCard(
+                          item: item,
+                          onTap: () => launchUrlSafe(item.url),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            } else {
+              // Display side by side on wide screens
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: projects.map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: SizedBox(
+                        width: 400,
+                        height: 220,
+                        child: _ProjectCard(
+                          item: item,
+                          onTap: () => launchUrlSafe(item.url),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               );
-            },
-          ),
+            }
+          },
         ),
       ],
     );

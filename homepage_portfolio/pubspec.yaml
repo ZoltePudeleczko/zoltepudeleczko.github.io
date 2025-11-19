@@ -63,6 +63,7 @@ flutter:
   assets:
     - assets/avatar.png
     - assets/tasksdolist_preview.png
+    - assets/kodi_geforcenow_preview.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
