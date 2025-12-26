@@ -10,7 +10,7 @@ class AppTextStyles {
 
   static TextStyle titleMedium(bool isDark) => TextStyle(
     fontSize: 20,
-    color: isDark ? Colors.white.withOpacity(0.87) : Colors.black87,
+    color: isDark ? Colors.white.withValues(alpha: 0.87) : Colors.black87,
   );
 
   static TextStyle bodyMedium(bool isDark) => TextStyle(

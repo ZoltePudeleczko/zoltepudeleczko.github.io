@@ -324,12 +324,12 @@ class _DarkModeToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white.withOpacity(0.2)
-              : Colors.black.withOpacity(0.1),
+              ? Colors.white.withValues(alpha: 0.2)
+              : Colors.black.withValues(alpha: 0.1),
         ),
       ),
       child: Row(
@@ -340,7 +340,7 @@ class _DarkModeToggle extends StatelessWidget {
               Icons.light_mode,
               color: !isDarkMode
                   ? Colors.orange
-                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                  : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
             ),
             onPressed: !isDarkMode ? null : () => onToggle(),
             tooltip: 'Light mode',
@@ -354,7 +354,7 @@ class _DarkModeToggle extends StatelessWidget {
               Icons.dark_mode,
               color: isDarkMode
                   ? Colors.blueAccent
-                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                  : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
             ),
             onPressed: isDarkMode ? null : () => onToggle(),
             tooltip: 'Dark mode',
@@ -572,11 +572,13 @@ class _PortfolioSectionState extends State<PortfolioSection>
     final projects = <_ProjectItem>[
       _ProjectItem(
         title: TextContent.tasksDoListName,
+        description: TextContent.tasksDoListDescription,
         url: AppConfig.tasksDoListUrl,
         previewAsset: AppConfig.tasksDoListPreviewAsset,
       ),
       _ProjectItem(
         title: TextContent.kodiGeforceNowName,
+        description: TextContent.kodiGeforceNowDescription,
         url: AppConfig.kodiGeforceNowUrl,
         previewAsset: AppConfig.kodiGeforceNowPreviewAsset,
       ),
@@ -668,12 +670,10 @@ class _PortfolioSectionState extends State<PortfolioSection>
                     ),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 720),
-                      child: SizedBox(
-                        height: 220,
-                        child: _ProjectCard(
-                          item: item,
-                          onTap: () => launchUrlSafe(item.url),
-                        ),
+                      child: _ProjectCard(
+                        item: item,
+                        onTap: () => launchUrlSafe(item.url),
+                        alwaysShowDescription: true,
                       ),
                     ),
                   );
@@ -690,10 +690,10 @@ class _PortfolioSectionState extends State<PortfolioSection>
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: SizedBox(
                         width: 400,
-                        height: 220,
                         child: _ProjectCard(
                           item: item,
                           onTap: () => launchUrlSafe(item.url),
+                          alwaysShowDescription: false,
                         ),
                       ),
                     );
@@ -710,89 +710,194 @@ class _PortfolioSectionState extends State<PortfolioSection>
 
 class _ProjectItem {
   final String title;
+  final InlineSpan description;
   final String url;
   final String? previewAsset; // asset path under `assets/`
 
   const _ProjectItem({
     required this.title,
+    required this.description,
     required this.url,
     this.previewAsset,
   });
 }
 
-class _ProjectCard extends StatelessWidget {
+class _ProjectCard extends StatefulWidget {
   final _ProjectItem item;
   final VoidCallback onTap;
-  const _ProjectCard({required this.item, required this.onTap});
+  final bool alwaysShowDescription;
+  const _ProjectCard({
+    required this.item,
+    required this.onTap,
+    required this.alwaysShowDescription,
+  });
+
+  @override
+  State<_ProjectCard> createState() => _ProjectCardState();
+}
+
+class _ProjectCardState extends State<_ProjectCard> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     const double radius = 16;
-    return Tooltip(
-      message: item.title,
-      waitDuration: const Duration(milliseconds: 200),
-      child: Material(
-        color: Colors.transparent,
-        elevation: 2,
-        borderRadius: BorderRadius.circular(radius),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          splashColor: Colors.white24,
-          highlightColor: Colors.white10,
-          child: Stack(
-            fit: StackFit.expand,
+    final showCaption = widget.alwaysShowDescription || _isHovered;
+    const double imageHeight = 220;
+    const double descriptionGap = 12;
+    final highlightButton = !widget.alwaysShowDescription && _isHovered;
+
+    Widget buildCaption() {
+      final bg = Theme.of(context).scaffoldBackgroundColor.withValues(
+        alpha: isDark ? 0.85 : 0.92,
+      );
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: DefaultTextStyle(
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.2,
+            color: isDark ? Colors.white70 : Colors.black54,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              if (item.previewAsset != null && item.previewAsset!.isNotEmpty)
-                Image.asset(
-                  item.previewAsset!,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.centerLeft,
-                  errorBuilder: (context, error, stack) => Container(
-                    color: isDark ? Colors.white12 : Colors.black12,
-                  ),
-                )
-              else
-                Container(
-                  color: isDark ? Colors.white12 : Colors.black12,
-                ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      isDark ? Colors.black54 : Colors.black26,
-                    ],
-                  ),
+              Text(
+                widget.item.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.15,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 24.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isDark ? Colors.white : Colors.black,
-                      foregroundColor: isDark ? Colors.black : Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: onTap,
-                    child: const Text(TextContent.viewProjectCta),
-                  ),
-                ),
+              const SizedBox(height: 4),
+              Text.rich(
+                widget.item.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
+        ),
+      );
+    }
+
+    return MouseRegion(
+      opaque: true,
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) {
+        if (widget.alwaysShowDescription) return;
+        setState(() => _isHovered = true);
+      },
+      onHover: (_) {
+        if (widget.alwaysShowDescription) return;
+        if (_isHovered) return;
+        setState(() => _isHovered = true);
+      },
+      onExit: (_) {
+        if (widget.alwaysShowDescription) return;
+        setState(() => _isHovered = false);
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: imageHeight,
+              child: Material(
+                color: Colors.transparent,
+                elevation: 2,
+                borderRadius: BorderRadius.circular(radius),
+                clipBehavior: Clip.antiAlias,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (widget.item.previewAsset != null &&
+                        widget.item.previewAsset!.isNotEmpty)
+                      Image.asset(
+                        widget.item.previewAsset!,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.centerLeft,
+                        errorBuilder: (context, error, stack) => Container(
+                          color: isDark ? Colors.white12 : Colors.black12,
+                        ),
+                      )
+                    else
+                      Container(
+                        color: isDark ? Colors.white12 : Colors.black12,
+                      ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            isDark ? Colors.black54 : Colors.black26,
+                          ],
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 24.0),
+                        child: IgnorePointer(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 140),
+                            curve: Curves.easeOut,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: highlightButton
+                                  ? (isDark
+                                      ? Colors.white.withValues(alpha: 0.92)
+                                      : Colors.black.withValues(alpha: 0.85))
+                                  : (isDark ? Colors.white : Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              TextContent.viewProjectCta,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: isDark ? Colors.black : Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: descriptionGap),
+            AnimatedOpacity(
+              opacity: showCaption ? 1 : 0,
+              duration: const Duration(milliseconds: 140),
+              curve: Curves.easeOut,
+              child: IgnorePointer(
+                ignoring: !showCaption,
+                child: buildCaption(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -941,8 +1046,8 @@ class BackgroundPainter extends CustomPainter {
           style: TextStyle(
             fontSize: symbol.size,
             color: isDarkMode
-                ? Colors.white.withOpacity(symbol.opacity)
-                : Colors.black.withOpacity(symbol.opacity),
+                ? Colors.white.withValues(alpha: symbol.opacity)
+                : Colors.black.withValues(alpha: symbol.opacity),
             fontWeight: FontWeight.w300,
             fontFamily: 'monospace',
           ),
@@ -976,3 +1081,4 @@ class BackgroundPainter extends CustomPainter {
         oldDelegate.isDarkMode != isDarkMode;
   }
 }
+
