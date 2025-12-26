@@ -2,31 +2,35 @@ import 'package:flutter/material.dart';
 
 class AppTextStyles {
   // Theme-based text styles
-  static TextStyle get headlineLarge => const TextStyle(
+  static TextStyle headlineLarge(bool isDark) => TextStyle(
     fontSize: 36,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    color: isDark ? Colors.white : Colors.black,
   );
 
-  static TextStyle get titleMedium =>
-      const TextStyle(fontSize: 20, color: Colors.black87);
+  static TextStyle titleMedium(bool isDark) => TextStyle(
+    fontSize: 20,
+    color: isDark ? Colors.white.withOpacity(0.87) : Colors.black87,
+  );
 
-  static TextStyle get bodyMedium =>
-      const TextStyle(fontSize: 16, color: Colors.black54);
+  static TextStyle bodyMedium(bool isDark) => TextStyle(
+    fontSize: 16,
+    color: isDark ? Colors.white70 : Colors.black54,
+  );
 
   // Button text style
   static TextStyle get buttonText =>
       const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 
   // Footer text styles
-  static const TextStyle footerText = TextStyle(
+  static TextStyle footerText(bool isDark) => TextStyle(
     color: Colors.blueAccent,
     decoration: TextDecoration.underline,
     fontSize: 14,
   );
 
-  static const TextStyle footerBodyText = TextStyle(
+  static TextStyle footerBodyText(bool isDark) => TextStyle(
     fontSize: 14,
-    color: Colors.black54,
+    color: isDark ? Colors.white70 : Colors.black54,
   );
 }

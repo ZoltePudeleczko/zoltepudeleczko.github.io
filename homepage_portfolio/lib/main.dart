@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'config/app_config.dart';
 import 'config/text_content.dart';
 import 'config/text_styles.dart';
@@ -15,12 +16,38 @@ Future<void> launchUrlSafe(String url) async {
   }
 }
 
-void main() {
-  runApp(const PortfolioApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final isDarkMode = prefs.getBool('darkMode') ?? false;
+  runApp(PortfolioApp(initialDarkMode: isDarkMode));
 }
 
-class PortfolioApp extends StatelessWidget {
-  const PortfolioApp({super.key});
+class PortfolioApp extends StatefulWidget {
+  final bool initialDarkMode;
+
+  const PortfolioApp({super.key, required this.initialDarkMode});
+
+  @override
+  State<PortfolioApp> createState() => _PortfolioAppState();
+}
+
+class _PortfolioAppState extends State<PortfolioApp> {
+  late bool _isDarkMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _isDarkMode = widget.initialDarkMode;
+  }
+
+  Future<void> _toggleDarkMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
+    await prefs.setBool('darkMode', _isDarkMode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +61,60 @@ class PortfolioApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Colors.white,
         textTheme: TextTheme(
-          headlineLarge: AppTextStyles.headlineLarge,
-          titleMedium: AppTextStyles.titleMedium,
-          bodyMedium: AppTextStyles.bodyMedium,
+          headlineLarge: AppTextStyles.headlineLarge(false),
+          titleMedium: AppTextStyles.titleMedium(false),
+          bodyMedium: AppTextStyles.bodyMedium(false),
         ),
       ),
-      home: const PortfolioHomePage(),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.dark(
+          primary: Colors.white,
+          secondary: Colors.blueAccent,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        textTheme: TextTheme(
+          headlineLarge: AppTextStyles.headlineLarge(true),
+          titleMedium: AppTextStyles.titleMedium(true),
+          bodyMedium: AppTextStyles.bodyMedium(true),
+        ),
+      ),
+      themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: PortfolioHomePage(
+        onToggleDarkMode: _toggleDarkMode,
+        isDarkMode: _isDarkMode,
+      ),
     );
   }
 }
 
 class PortfolioHomePage extends StatelessWidget {
-  const PortfolioHomePage({super.key});
+  final Future<void> Function() onToggleDarkMode;
+  final bool isDarkMode;
 
-  Widget _buildSocialButton(IconData icon, String tooltip, String url) {
+  const PortfolioHomePage({
+    super.key,
+    required this.onToggleDarkMode,
+    required this.isDarkMode,
+  });
+
+  Widget _buildSocialButton(
+      IconData icon, String tooltip, String url, BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return IconButton(
       icon: FaIcon(icon),
       tooltip: tooltip,
+      color: isDark ? Colors.white70 : Colors.black87,
       onPressed: () => launchUrlSafe(url),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Stack(
         children: [
-          const AnimatedBackground(),
+          AnimatedBackground(isDarkMode: isDark),
           SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -94,19 +148,21 @@ class PortfolioHomePage extends StatelessWidget {
                             FontAwesomeIcons.github,
                             TextContent.githubLabel,
                             AppConfig.githubUrl,
+                            context,
                           ),
                           _buildSocialButton(
                             FontAwesomeIcons.linkedin,
                             TextContent.linkedinLabel,
                             AppConfig.linkedinUrl,
+                            context,
                           ),
                         ],
                       ),
                       const SizedBox(height: AppConfig.spacingXLarge),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
+                          backgroundColor: isDark ? Colors.white : Colors.black,
+                          foregroundColor: isDark ? Colors.black : Colors.white,
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppConfig.buttonHorizontalPadding,
                             vertical: AppConfig.buttonVerticalPadding,
@@ -119,9 +175,9 @@ class PortfolioHomePage extends StatelessWidget {
                           textStyle: AppTextStyles.buttonText,
                           elevation: 0,
                         ),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.mail_outline,
-                          color: Colors.white,
+                          color: isDark ? Colors.black : Colors.white,
                         ),
                         label: const Text(TextContent.sayHelloButton),
                         onPressed: () => launchUrlSafe(AppConfig.emailUrl),
@@ -133,6 +189,14 @@ class PortfolioHomePage extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: _DarkModeToggle(
+              isDarkMode: isDarkMode,
+              onToggle: onToggleDarkMode,
             ),
           ),
         ],
@@ -247,6 +311,60 @@ class ResponsiveDescription extends StatelessWidget {
   }
 }
 
+class _DarkModeToggle extends StatelessWidget {
+  final bool isDarkMode;
+  final Future<void> Function() onToggle;
+
+  const _DarkModeToggle({
+    required this.isDarkMode,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white.withOpacity(0.2)
+              : Colors.black.withOpacity(0.1),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.light_mode,
+              color: !isDarkMode
+                  ? Colors.orange
+                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+            ),
+            onPressed: !isDarkMode ? null : () => onToggle(),
+            tooltip: 'Light mode',
+          ),
+          Switch(
+            value: isDarkMode,
+            onChanged: (_) => onToggle(),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.dark_mode,
+              color: isDarkMode
+                  ? Colors.blueAccent
+                  : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+            ),
+            onPressed: isDarkMode ? null : () => onToggle(),
+            tooltip: 'Dark mode',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class BlinkingUnderscore extends StatefulWidget {
   const BlinkingUnderscore({super.key, this.style});
   final TextStyle? style;
@@ -290,24 +408,15 @@ class _BlinkingUnderscoreState extends State<BlinkingUnderscore>
 class _Footer extends StatelessWidget {
   const _Footer();
 
-  Widget _buildLink(String text, String url) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => launchUrlSafe(url),
-        child: Text(text, style: AppTextStyles.footerText),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           TextContent.footerTagline,
-          style: AppTextStyles.footerBodyText,
+          style: AppTextStyles.footerBodyText(isDark),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppConfig.spacingTiny),
@@ -317,12 +426,22 @@ class _Footer extends StatelessWidget {
           children: [
             Text(
               TextContent.sourceCodePrefix,
-              style: AppTextStyles.footerBodyText,
+              style: AppTextStyles.footerBodyText(isDark),
             ),
-            _buildLink(TextContent.sourceCodeLink, AppConfig.repoUrl),
+            _buildLink(TextContent.sourceCodeLink, AppConfig.repoUrl, isDark),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildLink(String text, String url, bool isDark) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => launchUrlSafe(url),
+        child: Text(text, style: AppTextStyles.footerText(isDark)),
+      ),
     );
   }
 }
@@ -368,12 +487,13 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
       _isAnimating = true;
     });
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text(TextContent.avatarGreeting),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.black87,
+        backgroundColor: isDark ? Colors.white24 : Colors.black87,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(20),
       ),
@@ -473,21 +593,26 @@ class _PortfolioSectionState extends State<PortfolioSection>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                width: 280,
-                height: 4,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black26,
-                      Colors.transparent,
-                    ],
-                    stops: [0.0, 0.5, 1.0],
-                  ),
-                ),
+              Builder(
+                builder: (context) {
+                  final isDark = Theme.of(context).brightness == Brightness.dark;
+                  return Container(
+                    width: 280,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Colors.transparent,
+                          isDark ? Colors.white24 : Colors.black26,
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 4),
               GestureDetector(
@@ -508,10 +633,15 @@ class _PortfolioSectionState extends State<PortfolioSection>
                       opacity: _arrowOpacity,
                       child: SlideTransition(
                         position: _arrowSlide,
-                        child: const Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 30,
-                          color: Colors.black45,
+                        child: Builder(
+                          builder: (context) {
+                            final isDark = Theme.of(context).brightness == Brightness.dark;
+                            return Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 30,
+                              color: isDark ? Colors.white38 : Colors.black45,
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -597,6 +727,7 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     const double radius = 16;
     return Tooltip(
       message: item.title,
@@ -618,18 +749,23 @@ class _ProjectCard extends StatelessWidget {
                   item.previewAsset!,
                   fit: BoxFit.cover,
                   alignment: Alignment.centerLeft,
-                  errorBuilder:
-                      (context, error, stack) =>
-                          Container(color: Colors.black12),
+                  errorBuilder: (context, error, stack) => Container(
+                    color: isDark ? Colors.white12 : Colors.black12,
+                  ),
                 )
               else
-                Container(color: Colors.black12),
+                Container(
+                  color: isDark ? Colors.white12 : Colors.black12,
+                ),
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black26],
+                    colors: [
+                      Colors.transparent,
+                      isDark ? Colors.black54 : Colors.black26,
+                    ],
                   ),
                 ),
               ),
@@ -639,8 +775,8 @@ class _ProjectCard extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 24.0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
+                      backgroundColor: isDark ? Colors.white : Colors.black,
+                      foregroundColor: isDark ? Colors.black : Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -665,7 +801,9 @@ class _ProjectCard extends StatelessWidget {
 
 // Animated Background with floating symbols
 class AnimatedBackground extends StatefulWidget {
-  const AnimatedBackground({super.key});
+  final bool isDarkMode;
+
+  const AnimatedBackground({super.key, required this.isDarkMode});
 
   @override
   State<AnimatedBackground> createState() => _AnimatedBackgroundState();
@@ -742,6 +880,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
           painter: BackgroundPainter(
             symbols: _symbols,
             progress: _controller.value,
+            isDarkMode: widget.isDarkMode,
           ),
           child: Container(),
         );
@@ -775,8 +914,13 @@ class FloatingSymbol {
 class BackgroundPainter extends CustomPainter {
   final List<FloatingSymbol> symbols;
   final double progress;
+  final bool isDarkMode;
 
-  BackgroundPainter({required this.symbols, required this.progress});
+  BackgroundPainter({
+    required this.symbols,
+    required this.progress,
+    required this.isDarkMode,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -796,7 +940,9 @@ class BackgroundPainter extends CustomPainter {
           text: symbol.symbol,
           style: TextStyle(
             fontSize: symbol.size,
-            color: Colors.black.withOpacity(symbol.opacity),
+            color: isDarkMode
+                ? Colors.white.withOpacity(symbol.opacity)
+                : Colors.black.withOpacity(symbol.opacity),
             fontWeight: FontWeight.w300,
             fontFamily: 'monospace',
           ),
@@ -826,6 +972,7 @@ class BackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BackgroundPainter oldDelegate) {
-    return oldDelegate.progress != progress;
+    return oldDelegate.progress != progress ||
+        oldDelegate.isDarkMode != isDarkMode;
   }
 }
