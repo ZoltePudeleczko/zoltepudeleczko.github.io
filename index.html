@@ -20,6 +20,7 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Zborowski_">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Cache busting meta tags -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -39,10 +40,29 @@
   <link rel="canonical" href="https://zborowski.xyz/">
   <link rel="manifest" href="manifest.json">
   <link rel="author" href="/humans.txt">
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
 </head>
 
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = "1101716933";
+  </script>
+  <script src="flutter_bootstrap.js" defer></script>
 </body>
 
 </html>
