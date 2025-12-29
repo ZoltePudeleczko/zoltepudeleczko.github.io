@@ -3,8 +3,8 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"index.html": "af6c1fceea33cec7447f54f9b629c4c0",
-"/": "af6c1fceea33cec7447f54f9b629c4c0",
+const RESOURCES = {"index.html": "e6b3d82975d772a0d59293091ef987ca",
+"/": "e6b3d82975d772a0d59293091ef987ca",
 "canvaskit/skwasm_heavy.wasm": "8034ad26ba2485dab2fd49bdd786837b",
 "canvaskit/skwasm.wasm": "264db41426307cfc7fa44b95a7772109",
 "canvaskit/canvaskit.wasm": "07b9f5853202304d3b0749d9306573cc",
@@ -44,7 +44,7 @@ const RESOURCES = {"index.html": "af6c1fceea33cec7447f54f9b629c4c0",
 "icons/Icon-192.png": "e5fba00af60a0120e8465afa629f8d85",
 "icons/Icon-maskable-192.png": "5dec6d2596c80ed52a3a0e15c2aa4cb6",
 "robots.txt": "0eb0df2567af16af44e0c6c66fdb9723",
-"flutter_bootstrap.js": "41256c679a0b1537b6f45175113045e9",
+"flutter_bootstrap.js": "51d197a6555f30408395b1409b2288f8",
 "tasksdolist/index.html": "6a4a425480a4a4451c137fc6cb35779b",
 "tasksdolist/privacypolicy/index.html": "468e0c61ba2dcae2b07eff28e1815fd0",
 "tasksdolist/README.md": "2478c5c27fdfbfe2df1ced82940e8358",
