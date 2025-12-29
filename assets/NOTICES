@@ -5042,12 +5042,7 @@ shared_preferences_platform_interface
 shared_preferences_web
 shared_preferences_windows
 url_launcher
-url_launcher_android
-url_launcher_ios
-url_launcher_linux
-url_launcher_macos
 url_launcher_platform_interface
-url_launcher_windows
 xdg_directories
 
 Copyright 2013 The Flutter Authors. All rights reserved.
@@ -30435,6 +30430,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 shared_preferences
 shared_preferences_android
 shared_preferences_foundation
+url_launcher_android
+url_launcher_ios
+url_launcher_linux
+url_launcher_macos
+url_launcher_windows
 
 Copyright 2013 The Flutter Authors
 
