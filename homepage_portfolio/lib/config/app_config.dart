@@ -35,6 +35,9 @@ class AppConfig {
   static const int avatarRotationDurationMs = 600;
   
   // Layout Settings
+  /// Viewport width at or below this uses a compact header theme toggle.
+  static const double themeToggleCompactWidth = 480.0;
+
   static const double horizontalPadding = 24.0;
   static const double avatarRadius = 56.0;
   static const String avatarImagePath = 'assets/avatar.png';

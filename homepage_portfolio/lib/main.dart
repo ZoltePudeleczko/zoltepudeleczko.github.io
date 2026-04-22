@@ -111,92 +111,108 @@ class PortfolioHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final useCompactToggle =
+        MediaQuery.sizeOf(context).width <= AppConfig.themeToggleCompactWidth;
+
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.none,
         children: [
-          AnimatedBackground(isDarkMode: isDark),
-          SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height,
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalPadding,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AnimatedAvatar(),
-                      const SizedBox(height: AppConfig.spacingLarge),
-                      const AnimatedNameRow(),
-                      const SizedBox(height: AppConfig.spacingMedium),
-                      Text(
-                        AppConfig.title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppConfig.spacingLarge),
-                      const ResponsiveDescription(),
-                      const SizedBox(height: AppConfig.spacingXLarge),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildSocialButton(
-                            FontAwesomeIcons.github,
-                            TextContent.githubLabel,
-                            AppConfig.githubUrl,
-                            context,
+          Positioned.fill(
+            child: AnimatedBackground(isDarkMode: isDark),
+          ),
+          Positioned.fill(
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.sizeOf(context).height,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalPadding,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _DarkModeToggle(
+                            compact: useCompactToggle,
+                            isDarkMode: isDarkMode,
+                            onToggle: onToggleDarkMode,
                           ),
-                          _buildSocialButton(
-                            FontAwesomeIcons.linkedin,
-                            TextContent.linkedinLabel,
-                            AppConfig.linkedinUrl,
-                            context,
+                        ),
+                        const SizedBox(height: AppConfig.spacingLarge),
+                        const Center(child: AnimatedAvatar()),
+                        const SizedBox(height: AppConfig.spacingLarge),
+                        const Center(child: AnimatedNameRow()),
+                        const SizedBox(height: AppConfig.spacingMedium),
+                        Text(
+                          AppConfig.title,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppConfig.spacingLarge),
+                        const ResponsiveDescription(),
+                        const SizedBox(height: AppConfig.spacingXLarge),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildSocialButton(
+                                FontAwesomeIcons.github,
+                                TextContent.githubLabel,
+                                AppConfig.githubUrl,
+                                context,
+                              ),
+                              _buildSocialButton(
+                                FontAwesomeIcons.linkedin,
+                                TextContent.linkedinLabel,
+                                AppConfig.linkedinUrl,
+                                context,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: AppConfig.spacingXLarge),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isDark ? Colors.white : Colors.black,
-                          foregroundColor: isDark ? Colors.black : Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppConfig.buttonHorizontalPadding,
-                            vertical: AppConfig.buttonVerticalPadding,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppConfig.buttonBorderRadius,
+                        ),
+                        const SizedBox(height: AppConfig.spacingXLarge),
+                        Center(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDark ? Colors.white : Colors.black,
+                              foregroundColor: isDark ? Colors.black : Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppConfig.buttonHorizontalPadding,
+                                vertical: AppConfig.buttonVerticalPadding,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppConfig.buttonBorderRadius,
+                                ),
+                              ),
+                              textStyle: AppTextStyles.buttonText,
+                              elevation: 0,
                             ),
+                            icon: Icon(
+                              Icons.mail_outline,
+                              color: isDark ? Colors.black : Colors.white,
+                            ),
+                            label: const Text(TextContent.sayHelloButton),
+                            onPressed: () => launchUrlSafe(AppConfig.emailUrl),
                           ),
-                          textStyle: AppTextStyles.buttonText,
-                          elevation: 0,
                         ),
-                        icon: Icon(
-                          Icons.mail_outline,
-                          color: isDark ? Colors.black : Colors.white,
-                        ),
-                        label: const Text(TextContent.sayHelloButton),
-                        onPressed: () => launchUrlSafe(AppConfig.emailUrl),
-                      ),
-                      const SizedBox(height: AppConfig.spacingFooter),
-                      const PortfolioSection(),
-                      const SizedBox(height: AppConfig.spacingFooter),
-                    ],
+                        const SizedBox(height: AppConfig.spacingFooter),
+                        const PortfolioSection(),
+                        const SizedBox(height: AppConfig.spacingFooter),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: _DarkModeToggle(
-              isDarkMode: isDarkMode,
-              onToggle: onToggleDarkMode,
             ),
           ),
         ],
@@ -303,64 +319,117 @@ class ResponsiveDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      '${AppConfig.descriptionFirstPart} ${AppConfig.descriptionSecondPart}',
-      style: Theme.of(context).textTheme.bodyMedium,
-      textAlign: TextAlign.center,
+    final style = Theme.of(context).textTheme.bodyMedium;
+    final fullText =
+        '${AppConfig.descriptionFirstPart} ${AppConfig.descriptionSecondPart}';
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final painter = TextPainter(
+          text: TextSpan(text: fullText, style: style),
+          textDirection: TextDirection.ltr,
+          textScaler: MediaQuery.textScalerOf(context),
+        )..layout(maxWidth: double.infinity);
+
+        if (painter.width <= constraints.maxWidth) {
+          return Text(
+            fullText,
+            style: style,
+            textAlign: TextAlign.center,
+          );
+        }
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              AppConfig.descriptionFirstPart,
+              style: style,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              AppConfig.descriptionSecondPart,
+              style: style,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
 class _DarkModeToggle extends StatelessWidget {
+  final bool compact;
   final bool isDarkMode;
   final Future<void> Function() onToggle;
 
   const _DarkModeToggle({
+    this.compact = false,
     required this.isDarkMode,
     required this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white.withValues(alpha: 0.2)
-              : Colors.black.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.light_mode,
-              color: !isDarkMode
-                  ? Colors.orange
-                  : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
-            ),
-            onPressed: !isDarkMode ? null : () => onToggle(),
-            tooltip: 'Light mode',
+    final borderColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white.withValues(alpha: 0.2)
+        : Colors.black.withValues(alpha: 0.1);
+    final iconStyle = IconButton.styleFrom(
+      padding: compact
+          ? const EdgeInsets.symmetric(horizontal: 2, vertical: 2)
+          : const EdgeInsets.all(8),
+      minimumSize: compact ? const Size(28, 28) : const Size(48, 48),
+      tapTargetSize:
+          compact ? MaterialTapTargetSize.shrinkWrap : MaterialTapTargetSize.padded,
+    );
+
+    final row = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          style: iconStyle,
+          icon: Icon(
+            Icons.light_mode,
+            size: compact ? 16 : 24,
+            color: !isDarkMode
+                ? Colors.orange
+                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
           ),
-          Switch(
+          onPressed: !isDarkMode ? null : () => onToggle(),
+          tooltip: 'Light mode',
+        ),
+        Transform.scale(
+          scale: compact ? 0.58 : 1.0,
+          child: Switch(
             value: isDarkMode,
             onChanged: (_) => onToggle(),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.dark_mode,
-              color: isDarkMode
-                  ? Colors.blueAccent
-                  : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
-            ),
-            onPressed: isDarkMode ? null : () => onToggle(),
-            tooltip: 'Dark mode',
+        ),
+        IconButton(
+          style: iconStyle,
+          icon: Icon(
+            Icons.dark_mode,
+            size: compact ? 16 : 24,
+            color: isDarkMode
+                ? Colors.blueAccent
+                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
           ),
-        ],
+          onPressed: isDarkMode ? null : () => onToggle(),
+          tooltip: 'Dark mode',
+        ),
+      ],
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(compact ? 14 : 24),
+        border: Border.all(color: borderColor),
       ),
+      child: row,
     );
   }
 }
@@ -486,18 +555,6 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
     setState(() {
       _isAnimating = true;
     });
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(TextContent.avatarGreeting),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: isDark ? Colors.white24 : Colors.black87,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.all(20),
-      ),
-    );
 
     _triggerRotationAnimation();
   }
@@ -782,11 +839,7 @@ class _ProjectCardState extends State<_ProjectCard> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text.rich(
-                widget.item.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text.rich(widget.item.description),
             ],
           ),
         ),

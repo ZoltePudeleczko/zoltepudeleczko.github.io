@@ -13,9 +13,6 @@ class TextContent {
   static const String sourceCodePrefix = 'You can check out the source code ';
   static const String sourceCodeLink = 'here';
   
-  // Avatar Animation
-  static const String avatarGreeting = 'Nice to see you! 👋';
-  
   // Portfolio / Projects
   static const String tasksDoListName = 'Tasks-Do-List';
   static const TextSpan tasksDoListDescription = TextSpan(
