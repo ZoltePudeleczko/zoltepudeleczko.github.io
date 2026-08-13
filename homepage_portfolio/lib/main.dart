@@ -115,6 +115,8 @@ class PortfolioHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final topTogglePadding =
+        MediaQuery.paddingOf(context).top + AppConfig.spacingSmall;
 
     return Scaffold(
       body: Stack(
@@ -138,11 +140,14 @@ class PortfolioHomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: _DarkModeToggle(
-                            isDarkMode: isDarkMode,
-                            onToggle: onToggleDarkMode,
+                        Padding(
+                          padding: EdgeInsets.only(top: topTogglePadding),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: _DarkModeToggle(
+                              isDarkMode: isDarkMode,
+                              onToggle: onToggleDarkMode,
+                            ),
                           ),
                         ),
                         const SizedBox(height: AppConfig.spacingLarge),

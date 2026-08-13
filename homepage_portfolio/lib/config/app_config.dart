@@ -2,7 +2,7 @@ class AppConfig {
   // Personal Information
   static const String firstName = 'Szymon Samuel';
   static const String lastName = 'Zborowski';
-  static const String title = 'Software Engineer';
+  static const String title = 'Senior Full-Stack Engineer';
   
   // Social Media URLs
   static const String githubUrl = 'https://github.com/ZoltePudeleczko';
