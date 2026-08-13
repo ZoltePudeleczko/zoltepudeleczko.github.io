@@ -9,8 +9,7 @@ class TextContent {
   static const String sayHelloButton = 'Say Hello';
   
   // Footer Content
-  static const String footerTagline = 'This page was proudly (and quickly) vibe-coded.';
-  static const String sourceCodePrefix = 'You can check out the source code ';
+  static const String sourceCodePrefix = 'Check out the source code ';
   static const String sourceCodeLink = 'here';
   
   // Portfolio / Projects

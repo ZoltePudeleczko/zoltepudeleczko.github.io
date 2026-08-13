@@ -98,7 +98,11 @@ class PortfolioHomePage extends StatelessWidget {
   });
 
   Widget _buildSocialButton(
-      IconData icon, String tooltip, String url, BuildContext context) {
+    IconData icon,
+    String tooltip,
+    String url,
+    BuildContext context,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return IconButton(
       icon: FaIcon(icon),
@@ -111,17 +115,13 @@ class PortfolioHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final useCompactToggle =
-        MediaQuery.sizeOf(context).width <= AppConfig.themeToggleCompactWidth;
 
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          Positioned.fill(
-            child: AnimatedBackground(isDarkMode: isDark),
-          ),
+          Positioned.fill(child: AnimatedBackground(isDarkMode: isDark)),
           Positioned.fill(
             child: SingleChildScrollView(
               child: ConstrainedBox(
@@ -141,7 +141,6 @@ class PortfolioHomePage extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: _DarkModeToggle(
-                            compact: useCompactToggle,
                             isDarkMode: isDarkMode,
                             onToggle: onToggleDarkMode,
                           ),
@@ -183,8 +182,12 @@ class PortfolioHomePage extends StatelessWidget {
                         Center(
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: isDark ? Colors.white : Colors.black,
-                              foregroundColor: isDark ? Colors.black : Colors.white,
+                              backgroundColor: isDark
+                                  ? Colors.white
+                                  : Colors.black,
+                              foregroundColor: isDark
+                                  ? Colors.black
+                                  : Colors.white,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppConfig.buttonHorizontalPadding,
                                 vertical: AppConfig.buttonVerticalPadding,
@@ -207,6 +210,8 @@ class PortfolioHomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: AppConfig.spacingFooter),
                         const PortfolioSection(),
+                        const SizedBox(height: AppConfig.spacingLarge),
+                        const Center(child: _Footer()),
                         const SizedBox(height: AppConfig.spacingFooter),
                       ],
                     ),
@@ -270,21 +275,20 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
             secondTextPainter.width;
         final shouldWrap = totalWidth > constraints.maxWidth;
 
-        final nameWidget =
-            _animationFinished
-                ? Text(AppConfig.lastName, style: textStyle)
-                : AnimatedTextKit(
-                  animatedTexts: [
-                    TyperAnimatedText(
-                      AppConfig.lastName,
-                      textStyle: textStyle,
-                      speed: const Duration(
-                        milliseconds: AppConfig.typingSpeedMs,
-                      ),
+        final nameWidget = _animationFinished
+            ? Text(AppConfig.lastName, style: textStyle)
+            : AnimatedTextKit(
+                animatedTexts: [
+                  TyperAnimatedText(
+                    AppConfig.lastName,
+                    textStyle: textStyle,
+                    speed: const Duration(
+                      milliseconds: AppConfig.typingSpeedMs,
                     ),
-                  ],
-                  isRepeatingAnimation: false,
-                );
+                  ),
+                ],
+                isRepeatingAnimation: false,
+              );
 
         if (shouldWrap) {
           return Column(
@@ -294,7 +298,10 @@ class _AnimatedNameRowState extends State<AnimatedNameRow> {
               const SizedBox(height: AppConfig.spacingSmall),
               Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [nameWidget, BlinkingUnderscore(style: textStyle)],
+                children: [
+                  nameWidget,
+                  BlinkingUnderscore(style: textStyle),
+                ],
               ),
             ],
           );
@@ -332,11 +339,7 @@ class ResponsiveDescription extends StatelessWidget {
         )..layout(maxWidth: double.infinity);
 
         if (painter.width <= constraints.maxWidth) {
-          return Text(
-            fullText,
-            style: style,
-            textAlign: TextAlign.center,
-          );
+          return Text(fullText, style: style, textAlign: TextAlign.center);
         }
 
         return Column(
@@ -361,75 +364,27 @@ class ResponsiveDescription extends StatelessWidget {
 }
 
 class _DarkModeToggle extends StatelessWidget {
-  final bool compact;
   final bool isDarkMode;
   final Future<void> Function() onToggle;
 
-  const _DarkModeToggle({
-    this.compact = false,
-    required this.isDarkMode,
-    required this.onToggle,
-  });
+  const _DarkModeToggle({required this.isDarkMode, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white.withValues(alpha: 0.2)
-        : Colors.black.withValues(alpha: 0.1);
-    final iconStyle = IconButton.styleFrom(
-      padding: compact
-          ? const EdgeInsets.symmetric(horizontal: 2, vertical: 2)
-          : const EdgeInsets.all(8),
-      minimumSize: compact ? const Size(28, 28) : const Size(48, 48),
-      tapTargetSize:
-          compact ? MaterialTapTargetSize.shrinkWrap : MaterialTapTargetSize.padded,
-    );
-
-    final row = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          style: iconStyle,
-          icon: Icon(
-            Icons.light_mode,
-            size: compact ? 16 : 24,
-            color: !isDarkMode
-                ? Colors.orange
-                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
-          ),
-          onPressed: !isDarkMode ? null : () => onToggle(),
-          tooltip: 'Light mode',
-        ),
-        Transform.scale(
-          scale: compact ? 0.58 : 1.0,
-          child: Switch(
-            value: isDarkMode,
-            onChanged: (_) => onToggle(),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-        ),
-        IconButton(
-          style: iconStyle,
-          icon: Icon(
-            Icons.dark_mode,
-            size: compact ? 16 : 24,
-            color: isDarkMode
-                ? Colors.blueAccent
-                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
-          ),
-          onPressed: isDarkMode ? null : () => onToggle(),
-          tooltip: 'Dark mode',
-        ),
-      ],
-    );
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(compact ? 14 : 24),
-        border: Border.all(color: borderColor),
+    final icon = isDarkMode ? Icons.dark_mode : Icons.light_mode;
+    final iconColor = isDarkMode ? Colors.blueAccent : Colors.orange;
+    return IconButton(
+      style: IconButton.styleFrom(
+        padding: const EdgeInsets.all(4),
+        minimumSize: const Size(30, 30),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: row,
+      onPressed: () => onToggle(),
+      tooltip: isDarkMode ? 'Switch to light mode' : 'Switch to dark mode',
+      icon: Opacity(
+        opacity: 0.55,
+        child: Icon(icon, size: 18, color: iconColor),
+      ),
     );
   }
 }
@@ -483,12 +438,6 @@ class _Footer extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          TextContent.footerTagline,
-          style: AppTextStyles.footerBodyText(isDark),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: AppConfig.spacingTiny),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -644,9 +593,6 @@ class _PortfolioSectionState extends State<PortfolioSection>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: AppConfig.spacingXLarge),
-        const _Footer(),
-        const SizedBox(height: AppConfig.spacingLarge),
         SizedBox(
           height: 56,
           child: Column(
@@ -654,7 +600,8 @@ class _PortfolioSectionState extends State<PortfolioSection>
             children: [
               Builder(
                 builder: (context) {
-                  final isDark = Theme.of(context).brightness == Brightness.dark;
+                  final isDark =
+                      Theme.of(context).brightness == Brightness.dark;
                   return Container(
                     width: 280,
                     height: 4,
@@ -694,7 +641,8 @@ class _PortfolioSectionState extends State<PortfolioSection>
                         position: _arrowSlide,
                         child: Builder(
                           builder: (context) {
-                            final isDark = Theme.of(context).brightness == Brightness.dark;
+                            final isDark =
+                                Theme.of(context).brightness == Brightness.dark;
                             return Icon(
                               Icons.keyboard_arrow_down_rounded,
                               size: 30,
@@ -806,9 +754,9 @@ class _ProjectCardState extends State<_ProjectCard> {
     final highlightButton = !widget.alwaysShowDescription && _isHovered;
 
     Widget buildCaption() {
-      final bg = Theme.of(context).scaffoldBackgroundColor.withValues(
-        alpha: isDark ? 0.85 : 0.92,
-      );
+      final bg = Theme.of(
+        context,
+      ).scaffoldBackgroundColor.withValues(alpha: isDark ? 0.85 : 0.92);
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -919,8 +867,8 @@ class _ProjectCardState extends State<_ProjectCard> {
                             decoration: BoxDecoration(
                               color: highlightButton
                                   ? (isDark
-                                      ? Colors.white.withValues(alpha: 0.92)
-                                      : Colors.black.withValues(alpha: 0.85))
+                                        ? Colors.white.withValues(alpha: 0.92)
+                                        : Colors.black.withValues(alpha: 0.85))
                                   : (isDark ? Colors.white : Colors.black),
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -1134,4 +1082,3 @@ class BackgroundPainter extends CustomPainter {
         oldDelegate.isDarkMode != isDarkMode;
   }
 }
-
