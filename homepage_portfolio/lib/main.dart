@@ -98,7 +98,7 @@ class PortfolioHomePage extends StatelessWidget {
   });
 
   Widget _buildSocialButton(
-    IconData icon,
+    FaIconData icon,
     String tooltip,
     String url,
     BuildContext context,
