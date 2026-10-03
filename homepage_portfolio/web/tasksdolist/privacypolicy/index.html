@@ -83,6 +83,13 @@
       }
       .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
       .footer a:hover { text-decoration: underline; }
+      .footer-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+      }
+      .footer-separator { color: var(--muted); }
       .back-link { display: inline-block; margin: 8px 0 24px; color: var(--primary); text-decoration: none; }
       .back-link:hover { text-decoration: underline; }
     </style>
@@ -119,6 +126,7 @@
             <li>We do not track your browsing history or other web activity</li>
             <li>We do not sell or share your data with third parties</li>
             <li>We do not use analytics or tracking tools</li>
+            <li>We do not use Google APIs or your data for AI features, model training, image generation, or image analysis</li>
         </ul>
 
         <h2>Data Storage</h2>
@@ -193,9 +201,12 @@
       </section>
       <section class="footer">
         <a href="https://zborowski.xyz" target="_blank" rel="noopener noreferrer" title="Visit zborowski.xyz">zborowski.xyz</a>
+        <div class="footer-links" aria-label="Legal links">
+          <a href="./" title="Read the privacy policy">Privacy Policy</a>
+          <span class="footer-separator" aria-hidden="true">|</span>
+          <a href="../termsofservice/" title="Read the terms of service">Terms of Service</a>
+        </div>
       </section>
     </main>
 </body>
 </html>
-
-

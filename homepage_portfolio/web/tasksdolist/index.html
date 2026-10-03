@@ -6,7 +6,7 @@
   <title>Tasks‑Do‑List — Google Tasks, done right</title>
   <link rel="canonical" href="https://tasksdolist.zborowski.xyz/">
   <link rel="author" href="/humans.txt">
-  <meta name="description" content="A clean, modern Chrome extension for Google Tasks. Multi‑account, multilingual, privacy‑first.">
+  <meta name="description" content="An open-source Chrome extension for viewing, creating, editing, and completing Google Tasks across multiple accounts. Privacy-first, with no ads, analytics, or AI features.">
   <meta name="theme-color" content="#0ea5e9">
   <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/ZoltePudeleczko/tasks-do-list-extension/main/icons/icon32.png">
@@ -71,6 +71,32 @@
       font-size: 18px;
       color: var(--muted);
       margin: 6px 0 28px;
+    }
+    .section {
+      margin: 32px 0 0;
+      padding-top: 28px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .compliance-note {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+    .compliance-note strong {
+      display: block;
+      margin-bottom: 8px;
     }
     .badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 22px; }
     .chip {
@@ -160,6 +186,13 @@
     }
     .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
     .footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .footer-separator { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -170,7 +203,8 @@
         <h1 class="title"><span class="tasks-word">Tasks</span>‑Do‑List</h1>
         <span class="byline">by Szymon Zborowski</span>
       </div>
-      <p class="tagline">The one and only Google Tasks Chrome extension you'll ever need.</p>
+      <p class="tagline"><b>Tasks-Do-List</b> - a Google Tasks helper</p>
+      <p class="tagline">A focused Google Tasks extension for managing your own task lists faster in Chrome.</p>
       <div class="badges" aria-label="Highlights">
         <span class="chip">Open‑source</span>
         <span class="chip">Ad‑free</span>
@@ -211,10 +245,20 @@
           <span>Buy me a coffee</span>
         </a>
       </div>
+      <section class="section" aria-labelledby="purpose-title">
+        <div class="compliance-note">
+          <strong>Google API usage and compliance</strong>
+          <p>This extension is not an AI product. It does not use Google APIs for AI features, image generation, image analysis, or AI-generated non-consensual intimate imagery (NCII). Google APIs are used only for account authentication and task management features described above.</p>
+        </div>
+      </section>
     </section>
     <section class="footer">
       <a href="https://zborowski.xyz" target="_blank" rel="noopener noreferrer" title="Visit zborowski.xyz">zborowski.xyz</a>
-      <a href="privacypolicy/" title="Read the privacy policy">Privacy Policy</a>
+      <div class="footer-links" aria-label="Legal links">
+        <a href="privacypolicy/" title="Read the privacy policy">Privacy Policy</a>
+        <span class="footer-separator" aria-hidden="true">|</span>
+        <a href="termsofservice/" title="Read the terms of service">Terms of Service</a>
+      </div>
     </section>
   </main>
 </body>

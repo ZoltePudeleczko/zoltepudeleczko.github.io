@@ -83,6 +83,13 @@
       }
       .footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
       .footer a:hover { text-decoration: underline; }
+      .footer-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+      }
+      .footer-separator { color: var(--muted); }
       .back-link { display: inline-block; margin: 8px 0 24px; color: var(--primary); text-decoration: none; }
       .back-link:hover { text-decoration: underline; }
     </style>
@@ -113,6 +120,7 @@
             <li>Manage multiple Google accounts</li>
             <li>Access task data through Google's official APIs</li>
         </ul>
+        <p>The Extension is a productivity tool only. It is not an AI product and does not generate, transform, classify, or analyze images, video, or intimate content.</p>
 
         <h2>3. User Accounts and Authentication</h2>
 
@@ -149,6 +157,7 @@
             <li>Reverse engineer, decompile, or disassemble the Extension</li>
             <li>Use the Extension to violate any applicable laws or regulations</li>
             <li>Use the Extension to collect or harvest personal information from others</li>
+            <li>Use the Extension or Google APIs accessed through it for AI-generated or AI-assisted non-consensual intimate imagery (NCII) or related harmful sexual content</li>
         </ul>
 
         <h2>5. Privacy and Data Protection</h2>
@@ -269,6 +278,11 @@
       </section>
       <section class="footer">
         <a href="https://zborowski.xyz" target="_blank" rel="noopener noreferrer" title="Visit zborowski.xyz">zborowski.xyz</a>
+        <div class="footer-links" aria-label="Legal links">
+          <a href="../privacypolicy/" title="Read the privacy policy">Privacy Policy</a>
+          <span class="footer-separator" aria-hidden="true">|</span>
+          <a href="./" title="Read the terms of service">Terms of Service</a>
+        </div>
       </section>
     </main>
 </body>

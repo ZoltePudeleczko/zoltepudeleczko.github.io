@@ -6,3 +6,4 @@ This directory contains the public website for the Tasks-Do-List Chrome extensio
 
 - `index.html` - Main landing page for the extension
 - `privacypolicy/index.html` - Privacy policy page (served at `/privacypolicy`)
+- `termsofservice/index.html` - Terms of service page (served at `/termsofservice`)
