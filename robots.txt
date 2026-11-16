@@ -4,5 +4,6 @@ Allow: /
 # Sitemaps for both served hosts
 Sitemap: https://zborowski.xyz/sitemap.xml
 Sitemap: https://tasksdolist.zborowski.xyz/sitemap.xml
+Sitemap: https://mapsforqwant.zborowski.xyz/sitemap.xml
 
 

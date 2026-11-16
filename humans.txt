@@ -5,12 +5,13 @@ Contact: szymon@zborowski.xyz
 
 /* PROJECTS */
 Tasks-Do-List: https://tasksdolist.zborowski.xyz
+Maps Tab for Qwant: https://mapsforqwant.zborowski.xyz
 Source: https://github.com/ZoltePudeleczko/zoltepudeleczko.github.io
 
 /* TECHNOLOGY */
 Homepage: Flutter Web (zborowski.xyz)
-Tasks-Do-List pages: Static HTML/CSS
+Tasks-Do-List and Maps Tab for Qwant pages: Static HTML/CSS
 Hosting: GitHub Pages
-Last update: 2025-08-09
+Last update: 2026-11-16
 
 
