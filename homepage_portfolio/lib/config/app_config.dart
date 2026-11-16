@@ -25,6 +25,9 @@ class AppConfig {
   // Preview image (bundled asset). Place the file at `assets/tasksdolist_preview.png`.
   static const String tasksDoListPreviewAsset = 'assets/tasksdolist_preview.png';
   
+  static const String mapsForQwantUrl = 'https://mapsforqwant.zborowski.xyz';
+  static const String mapsForQwantPreviewAsset = 'assets/mapsforqwant_preview.png';
+
   static const String kodiGeforceNowUrl = 'https://github.com/ZoltePudeleczko/Kodi-GeForceNOW';
   static const String kodiGeforceNowPreviewAsset = 'assets/kodi_geforcenow_preview.png';
   

@@ -588,6 +588,12 @@ class _PortfolioSectionState extends State<PortfolioSection>
         previewAsset: AppConfig.tasksDoListPreviewAsset,
       ),
       _ProjectItem(
+        title: TextContent.mapsForQwantName,
+        description: TextContent.mapsForQwantDescription,
+        url: AppConfig.mapsForQwantUrl,
+        previewAsset: AppConfig.mapsForQwantPreviewAsset,
+      ),
+      _ProjectItem(
         title: TextContent.kodiGeforceNowName,
         description: TextContent.kodiGeforceNowDescription,
         url: AppConfig.kodiGeforceNowUrl,

@@ -1,0 +1,14 @@
+/* TEAM */
+Developer: Szymon Zborowski
+Contact: szymon@zborowski.xyz
+
+/* PROJECT */
+Maps Tab for Qwant: Chrome extension
+Homepage: https://mapsforqwant.zborowski.xyz
+Privacy: https://mapsforqwant.zborowski.xyz/privacypolicy/
+Source: https://github.com/ZoltePudeleczko/maps-for-qwant-extension
+
+/* TECHNOLOGY */
+Static HTML/CSS
+Hosting: GitHub Pages
+Last update: 2026-11-16

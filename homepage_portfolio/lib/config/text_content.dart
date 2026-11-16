@@ -25,6 +25,18 @@ class TextContent {
       ),
     ],
   );
+  static const String mapsForQwantName = 'Maps Tab for Qwant';
+  static const TextSpan mapsForQwantDescription = TextSpan(
+    children: [
+      TextSpan(style: TextStyle(fontWeight: FontWeight.w700), text: 'Chrome extension'),
+      TextSpan(text: ' written in '),
+      TextSpan(style: TextStyle(fontWeight: FontWeight.w700), text: 'JavaScript'),
+      TextSpan(
+        text:
+            ' that adds a Maps tab to Qwant search, opening queries in your favourite map service.',
+      ),
+    ],
+  );
   static const String kodiGeforceNowName = 'Kodi GeForce Now Addon';
   static const TextSpan kodiGeforceNowDescription = TextSpan(
     children: [
